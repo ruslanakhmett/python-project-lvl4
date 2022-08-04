@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+
+{% block content %}
+<main class="px-3">
+    <h1>{% trans "Привет от Хекслета!" %}</h1>
+    <p class="lead">{% trans "Практические курсы по программированию" %}</p>
+    <p class="lead">
+      <a href="#" class="btn btn-lg btn-secondary fw-bold border-white bg-white">{% trans "Узнать больше" %}</a>
+    </p>
+  </main>
+{% endblock %}
