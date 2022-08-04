@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load bootstrap4 %}
+
+{% block content %}
+
+<main class="px-3">
+<h1>{% trans "Вход" %}</h1>
+<br>
+<form method="post">
+    {% csrf_token %}
+      <div class="w-50 container">
+          <div class="col align-self-center">
+            {{ form.as_p }}
+            <br>
+            <button class="btn btn-lg btn-secondary fw-bold border-white bg-white" type="submit">{% trans "Войти" %}</button>
+        </div>
+      </div>
+    </main>
+
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'success' %} 
+    <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+        {% else %}
+        <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+
+
+
+{% endblock %}
