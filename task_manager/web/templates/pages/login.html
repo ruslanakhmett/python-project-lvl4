@@ -4,6 +4,23 @@
 
 {% block content %}
 
+{% if request.user.is_authenticated %}
+    {% include 'navbar_in.html' %}
+{% else %}
+    {% include 'navbar_out.html' %}
+{% endif %}
+
+{% block navbar %}
+{% endblock %}
+
+
+{% if messages %}
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+    {% endif %}
+
+
 <main class="px-3">
 <h1>{% trans "Вход" %}</h1>
 <br>
@@ -17,17 +34,5 @@
         </div>
       </div>
     </main>
-
-    {% if messages %}
-    {% for message in messages %}
-    {% if message.tags == 'success' %} 
-    <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
-        {% else %}
-        <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
-        {% endif %}
-    {% endfor %}
-    {% endif %}
-
-
 
 {% endblock %}

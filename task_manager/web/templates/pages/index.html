@@ -3,6 +3,25 @@
 
 
 {% block content %}
+
+{% if request.user.is_authenticated %}
+    {% include 'navbar_in.html' %}
+{% else %}
+    {% include 'navbar_out.html' %}
+{% endif %}
+
+{% block navbar %}
+{% endblock %}
+
+
+{% if messages %}
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+{% endif %}
+
+<br>
+
 <main class="px-3">
     <h1>{% trans "Привет от Хекслета!" %}</h1>
     <p class="lead">{% trans "Практические курсы по программированию" %}</p>
@@ -10,4 +29,5 @@
       <a href="#" class="btn btn-lg btn-secondary fw-bold border-white bg-white">{% trans "Узнать больше" %}</a>
     </p>
   </main>
+
 {% endblock %}

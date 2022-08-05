@@ -3,6 +3,8 @@
 <html lang="" class="h-100">
 {% load static %}
 {% load i18n %}
+
+
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -84,29 +86,13 @@
     <link href="{% static 'css/cover.css' %}" rel="stylesheet">
   </head>
 
-  <body class="d-flex h-100 text-center text-bg-dark">
-<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-  <header class="mb-auto">
-    <div>
-      <h3 class="float-md-start mb-0">{% trans "Менеджер задач" %}</h3>
-      <nav class="nav nav-masthead justify-content-center float-md-end">
-        <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="#">{% trans "Пользователи" %}</a>
-        <a class="nav-link fw-bold py-1 px-0" href="{% url 'login' %}">{% trans "Вход" %}</a>
-        <a class="nav-link fw-bold py-1 px-0" href="{% url 'signup' %}">{% trans "Регистрация" %}</a>
-      </nav>
-    </div>
-  </header>
-
-
   {% block content %}{% endblock %}
 
-  <footer class="footer mt-auto py-3">
-    <div class="container">
-      <span class="text-muted">{% trans "Разработано для Hexlet Python Dev Course by RuslanAkhmett" %}</span>
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+      <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
     </div>
   </footer>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script>window.jQuery || document.write('<script src="{% static 'js/jquery.slim.min.js' %}"><\/script>')</script><script src="{% static 'js/bootstrap.bundle.min.js' %}" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script></body>
 
   </body>
 </html>

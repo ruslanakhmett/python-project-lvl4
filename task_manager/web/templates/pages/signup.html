@@ -4,19 +4,36 @@
 
 {% block content %}
 
+{% if request.user.is_authenticated %}
+    {% include 'navbar_in.html' %}
+{% else %}
+    {% include 'navbar_out.html' %}
+{% endif %}
+
+{% block navbar %}
+{% endblock %}
+
+<br>
 <h1>{% trans "Регистрация" %}</h1>
 <br>
 <form method="post">
-    {% csrf_token %}
-    <main>
-      <div class="w-30 container">
-          <div class="col align-self-center">
-            {{ form.as_p }}
-            <br>
-            <button class="btn btn-lg btn-secondary fw-bold border-white bg-white" type="submit">{% trans "Войти" %}</button>
-        </div>
-      </div>
-    </main>
-
+  {% csrf_token %}
+  {% for field in form %}
+    <p>
+      {{ field.label_tag }}<br>
+      {{ field }}
+      {% if field.help_text %}
+      <br>
+        <small style="color: grey">{{ field.help_text }}</small>
+      {% endif %}
+      {% for error in field.errors %}
+        <p style="color: red">{{ error }}</p>
+      {% endfor %}
+    </p>
+  {% endfor %}
+  <button class="btn btn-lg btn-secondary fw-bold border-white bg-white" type="submit">{% trans "Зарегистрировать" %}</button>
+</form>
+<br>
+<br>
 
 {% endblock %}
