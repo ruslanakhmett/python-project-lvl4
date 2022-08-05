@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -58,13 +59,23 @@ TEMPLATES = [
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd6pv41br7g2bqk',
+        'USER': 'ofvhmxqaaqcwts',
+        'PASSWORD': '2164e9ba65909b77982b7ff63a6dd563f9b3faca86e45e1b7e96067f3be6da76',
+        'HOST': 'ec2-54-229-217-195.eu-west-1.compute.amazonaws.com',
+        'PORT':  5432
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -100,3 +111,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOCALE_PATHS = ( os.path.join(BASE_DIR, 'task_manager/locale'), )
 
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_URL = '/media/'
