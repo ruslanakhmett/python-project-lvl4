@@ -1,14 +1,11 @@
-from django.http import HttpResponse
 from django.contrib import messages
 from django.shortcuts import render,redirect
 from django.views import View
 from django.contrib.auth import login, logout
-from .forms import UserLoginForm, SignUpForm
 from django.contrib.auth import authenticate
-from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.auth.models import User
-
+from .forms import UserLoginForm, SignUpForm
 
 
 class IndexView(View):
@@ -69,6 +66,56 @@ class SignUpView(CreateView):
 
 class UsersShowView(View):
     template_name = 'pages/users.html'
-    
+
     def get(self, request):
         return render(request, self.template_name, context={'users': User.objects.all()})
+
+
+class UpdateUserView(View):
+    template_name = 'pages/user_update.html'
+    
+    def get(self, request, *args, **kwargs):
+        form = SignUpForm( )
+        
+        if request.user.is_authenticated:
+            user_id_from_link = kwargs['pk']
+            if request.user.id == user_id_from_link: 
+                return render(request, self.template_name, context={'form': form})
+            messages.add_message(request, messages.ERROR, 'У вас нет прав для изменения другого пользователя.')
+            return redirect('users')
+        else:
+            messages.add_message(request, messages.ERROR, 'Вы не авторизованы! Пожалуйста, выполните вход.')
+            return redirect('login')
+
+    def post(self, request, *args, **kwargs):
+        form = SignUpForm(request.POST, instance=request.user)
+        
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, 'Пользователь успешно изменен')
+            return redirect('users')
+        return render(request, self.template_name, context={'form': form})
+    
+    
+class DeleteUserView(View):
+    template_name = 'pages/user_delete.html'
+    
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            user_id_from_link = kwargs['pk']
+            if request.user.id == user_id_from_link: 
+                return render(request, self.template_name)
+            messages.add_message(request, messages.ERROR, 'У вас нет прав для изменения другого пользователя.')
+            return redirect('users')
+        else:
+            messages.add_message(request, messages.ERROR, 'Вы не авторизованы! Пожалуйста, выполните вход.')
+            return redirect('login')
+        
+    def post(self, request, *args, **kwargs):
+        form = SignUpForm(request.POST)
+        
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, 'Пользователь успешно изменен')
+            return redirect('users')
+        return render(request, self.template_name, context={'form': form})

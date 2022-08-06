@@ -7,9 +7,10 @@ from django.dispatch import receiver
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
-        return str(self.create_date.date())
+        return self.create_date.strftime("%d.%m.%Y %H:%M")
+
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):

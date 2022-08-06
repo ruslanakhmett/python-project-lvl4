@@ -3,6 +3,7 @@ from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 import dj_database_url
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(find_dotenv())
@@ -59,13 +60,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -95,7 +89,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -113,3 +107,9 @@ LOCALE_PATHS = ( os.path.join(BASE_DIR, 'task_manager/locale'), )
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
+
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass

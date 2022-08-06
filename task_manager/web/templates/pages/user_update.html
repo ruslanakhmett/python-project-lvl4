@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load bootstrap4 %}
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+    {% include 'navbar_in.html' %}
+{% else %}
+    {% include 'navbar_out.html' %}
+{% endif %}
+
+{% block navbar %}
+{% endblock %}
+
+<br>
+<h1>{% trans "Изменение пользователя" %}</h1>
+<br>
+<form method="post">
+  {% csrf_token %}
+  {% for field in form %}
+    <p>
+      {{ field.label_tag }}<br>
+      {{ field }}
+      {% if field.help_text %}
+      <br>
+        <small style="color: grey">{{ field.help_text }}</small>
+      {% endif %}
+      {% for error in field.errors %}
+        <p style="color: red">{{ error }}</p>
+      {% endfor %}
+    </p>
+  {% endfor %}
+  <button class="btn btn-lg btn-secondary fw-bold border-white bg-white" type="submit">{% trans "Изменить" %}</button>
+</form>
+<br>
+<br>
+
+{% endblock %}
