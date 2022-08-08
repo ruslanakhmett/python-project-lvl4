@@ -16,7 +16,11 @@
 
 {% if messages %}
     {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% if message.tags == 'success' %} 
+              <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% else %}
+              <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endif %}
     {% endfor %}
 {% endif %}
 
@@ -26,7 +30,7 @@
     <h1>{% trans "Привет от Хекслета!" %}</h1>
     <p class="lead">{% trans "Практические курсы по программированию" %}</p>
     <p class="lead">
-      <a href="#" class="btn btn-lg btn-secondary fw-bold border-white bg-white">{% trans "Узнать больше" %}</a>
+      <a href="https://ru.hexlet.io/my" class="btn btn-lg btn-secondary fw-bold border-white bg-white">{% trans "Узнать больше" %}</a>
     </p>
   </main>
 

@@ -1,18 +1,22 @@
 {% load i18n %}
 
 <body class="d-flex h-100 text-center text-bg-dark">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <div class="cover-container d-flex w-100 h-100 p-2 mx-auto flex-column">
       <header class="mb-auto">
         <div>
-          <h3 class="float-md-start mb-0">{% trans "Менеджер задач" %}</h3>
+          <a a class="navbar-brand" href="/">
+          <h3 class="float-md-start mb-1">{% trans "Менеджер задач" %}</h3></a>
           <nav class="nav nav-masthead justify-content-center float-md-end">
             <a class="nav-link fw-bold py-1 px-0 active" href="{% url 'users' %}">{% trans "Пользователи" %}</a>
             <a class="nav-link fw-bold py-1 px-0 active" href="{% url 'login' %}">{% trans "Статусы" %}</a>
             <a class="nav-link fw-bold py-1 px-0 active" href="{% url 'signup' %}">{% trans "Метки" %}</a>
             <a class="nav-link fw-bold py-1 px-0 active" href="{% url 'login' %}">{% trans "Задачи" %}</a>
-            <form action="{% url 'logout' %}" method="post"> {% csrf_token %}
-              <button class="btn border-white bg-white" type="submit">{% trans "Выход" %}</button>
-            </form>
+            <form class="nav-link fw-bold py-1 px-0 active {% if page == selected_page %}active{% endif %}" id="form-id" action="{% url 'logout' %}" method="post">
+              {% csrf_token %}
+              <a onclick="document.getElementById('form-id').submit();">Выход</a>
+          </form>
+
+          <!--<a class="nav-link {% if page == selected_page %}active{% endif %}" onclick="document.getElementById('form-id').submit();">Add page</a>-->
           </nav>
         </div>
       </header>
