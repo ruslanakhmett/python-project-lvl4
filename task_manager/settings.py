@@ -93,6 +93,8 @@ TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
+USE_TZ = True
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

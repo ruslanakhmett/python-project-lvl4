@@ -80,18 +80,18 @@ class UpdateUserView(View):
         
         if request.user.is_authenticated:
             form = SignUpForm(instance=request.user)
-            
+
             user_id_from_link = kwargs['pk']
-            if request.user.id == user_id_from_link: 
+            if request.user.pk == user_id_from_link: 
                 return render(request, self.template_name, context={'form': form})
             messages.add_message(request, 
                                  messages.ERROR, 
-                                 'У вас нет прав для изменения другого пользователя.')
+                                 'У вас нет прав для изменения другого пользователя.', fail_silently=True)
             return redirect('users')
         else:
             messages.add_message(request, 
                                  messages.ERROR, 
-                                 'Вы не авторизованы! Пожалуйста, выполните вход.')
+                                 'Вы не авторизованы! Пожалуйста, выполните вход.', fail_silently=True)
             return redirect('login')
 
     def post(self, request, *args, **kwargs):

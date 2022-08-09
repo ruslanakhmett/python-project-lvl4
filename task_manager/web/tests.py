@@ -1,35 +1,85 @@
-from django.test import TestCase
-
+from django.test import TestCase, override_settings, Client, RequestFactory
+from django.contrib.auth import authenticate
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
+from .views import UpdateUserView
 
-class AuthorModelTest(TestCase):
+
+ROOT_URL = 'http://127.0.0.1:8000'
+
+@override_settings(STATICFILES_STORAGE='django.contrib.staticfiles.storage.StaticFilesStorage')
+class NoLoginTestCase(TestCase):
+
+    def test_without_login(self):
+
+        response = self.client.get(ROOT_URL)
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(ROOT_URL + '/login/')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(ROOT_URL + '/users/')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(ROOT_URL + '/users/create/')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(ROOT_URL + '/users/1/update/')
+        self.assertEqual(response.status_code, 302)
+
+
+@override_settings(STATICFILES_STORAGE='django.contrib.staticfiles.storage.StaticFilesStorage')
+class LoginTestCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        #Set up non-modified objects used by all test methods
-        User.objects.create(username='bbBoy', first_name='Big', last_name='Bob')
+        User.objects.create(username='sergio',
+                            first_name='Сергей',
+                            last_name='Иванов',
+                            password='12345test')
 
-    def test_first_name_label(self):
-        user=User.objects.get(id=1)
-        field_label = user._meta.get_field('first_name').verbose_name
-        self.assertEqual(field_label,'имя')
+    def test_login_logout(self):
+            c = Client()
+            response = c.post('/login/', {'username': 'sergio', 'password': '12345test'})
+            self.assertEqual(response.status_code, 200)
+            response = c.post('/logout/')
+            self.assertEqual(response.status_code, 302)
 
-    # def test_date_of_death_label(self):
-    #     author=Author.objects.get(id=1)
-    #     field_label = author._meta.get_field('date_of_death').verbose_name
-    #     self.assertEquals(field_label,'died')
+    def test_good_update_page(self):
+        user = User.objects.get(username='sergio')
+        kwargs={'pk': 1}
+        factory = RequestFactory()
+        request = factory.get('/users/1/update/', kwargs=kwargs)
+        request.user = user
+        response = UpdateUserView.as_view()(request, **kwargs)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_bad_update_page(self):
+        user = User.objects.get(username='sergio')
+        kwargs={'pk': 2}
+        factory = RequestFactory()
+        request = factory.get('/users/1/update/', kwargs=kwargs)
+        request.user = user
+        response = UpdateUserView.as_view()(request, **kwargs)
+        self.assertNotEqual(response.status_code, 200)
 
-    # def test_first_name_max_length(self):
-    #     author=Author.objects.get(id=1)
-    #     max_length = author._meta.get_field('first_name').max_length
-    #     self.assertEquals(max_length,100)
 
-    # def test_object_name_is_last_name_comma_first_name(self):
-    #     author=Author.objects.get(id=1)
-    #     expected_object_name = '%s, %s' % (author.last_name, author.first_name)
-    #     self.assertEquals(expected_object_name,str(author))
+class UserModelTest(TestCase):
 
-    # def test_get_absolute_url(self):
-    #     author=Author.objects.get(id=1)
-    #     #This will also fail if the urlconf is not defined.
-    #     self.assertEquals(author.get_absolute_url(),'/catalog/author/1')
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create(username='sergio',
+                            first_name='Сергей',
+                            last_name='Иванов',
+                            password='12345test')
+
+    def test_username(self):
+        user = User.objects.get(id=1)
+        recorded_name = user.username
+        self.assertEqual(recorded_name,'sergio')
+
+    def test_first_name(self):
+        user = User.objects.get(id=1)
+        recorded_name = user.first_name
+        self.assertEqual(recorded_name,'Сергей')
+
+    def test_last_name(self):
+        user = User.objects.get(id=1)
+        recorded_name = user.last_name
+        self.assertEqual(recorded_name,'Иванов')
