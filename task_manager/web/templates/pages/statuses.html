@@ -28,28 +28,29 @@
     {% endfor %}
 {% endif %}
 
-<h1>{% trans "Пользователи" %}</h1>
+<h1>{% trans "Статусы" %}</h1>
+<br>
+<a class="nav-link" href="{% url 'statuses_create' %}">Создать статус</a>
 <br>
 
 <table class="table table-striped table-dark">
     <thead>
       <tr>
         <th scope="col">ID</th>
-        <th scope="col">Имя пользователя</th>
-        <th scope="col">Полное имя</th>
+        <th scope="col">Имя</th>
         <th scope="col">Дата создания</th>
       </tr>
     </thead>
-    {% for user in users %}
+    {% for status in statuses %}
     <tbody>
       <tr>
-        <th scope="row">{{ user.pk }}</th>
-        <td>{{ user.username }}</td>
-        <td>{{ user.first_name }} {{ user.last_name }}</td>
-        <td>{{ user.date_joined|date:'Y-m-d H:i'}}</td>
+        <th scope="row">{{ status.pk }}</th>
+        <td>{{ status.name }}</td>
+
+        <td>{{ status.created_at|date:'Y-m-d H:i'}}</td>
         <td>
-          <a class="nav-link" href="{{ user.pk }}/update/">Изменить</a>
-          <a  class="nav-link" href="{{ user.pk }}/delete/">Удалить</a>
+          <a class="nav-link" href="{{ status.pk }}/update/">Изменить</a>
+          <a class="nav-link" href="{{ status.pk }}/delete/">Удалить</a>
         </td>
       </tr>
       {% endfor %}

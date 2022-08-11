@@ -8,7 +8,7 @@
           <h3 class="float-md-start mb-1">{% trans "Менеджер задач" %}</h3></a>
           <nav class="nav nav-masthead justify-content-center float-md-end">
             <a class="nav-link fw-bold py-1 px-0 active" href="{% url 'users' %}">{% trans "Пользователи" %}</a>
-            <a class="nav-link fw-bold py-1 px-0 active" href="{% url 'login' %}">{% trans "Статусы" %}</a>
+            <a class="nav-link fw-bold py-1 px-0 active" href="{% url 'statuses' %}">{% trans "Статусы" %}</a>
             <a class="nav-link fw-bold py-1 px-0 active" href="{% url 'signup' %}">{% trans "Метки" %}</a>
             <a class="nav-link fw-bold py-1 px-0 active" href="{% url 'login' %}">{% trans "Задачи" %}</a>
             <form class="nav-link fw-bold py-1 px-0 active {% if page == selected_page %}active{% endif %}" id="form-id" action="{% url 'logout' %}" method="post">

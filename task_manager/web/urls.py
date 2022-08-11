@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .views import (DeleteUserView, IndexView, LoginPageView, LogoutView,
-                    SignUpView, UpdateUserView, UsersShowView)
+                    SignUpView, UpdateUserView, UsersShowView, StatusesShowView, 
+                    StatusesCreateView, StatusesUpdateView, StatusesDeleteView)
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
@@ -11,5 +12,9 @@ urlpatterns = [
     path('users/create/', SignUpView.as_view(), name='signup'),
     path('users/<int:pk>/update/', UpdateUserView.as_view(), name='update_user'),
     path('users/<int:pk>/delete/', DeleteUserView.as_view(), name='delete_user'),
+    path('statuses/', StatusesShowView.as_view(), name='statuses'),
+    path('statuses/create', StatusesCreateView.as_view(), name='statuses_create'),
+    path('statuses/<int:pk>/update/', StatusesUpdateView.as_view(), name='statuses_update'),
+    path('statuses/<int:pk>/delete/', StatusesDeleteView.as_view(), name='statuses_delete'),
 
 ]

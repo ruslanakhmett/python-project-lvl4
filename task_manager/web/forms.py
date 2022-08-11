@@ -24,3 +24,7 @@ class SignUpForm(UserCreationForm):
                   "username",
                   "password1",
                   "password2")
+
+
+class StatusCreateForm(forms.Form):
+    name = forms.CharField(label="Имя", widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': 'Имя'}))

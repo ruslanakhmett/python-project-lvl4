@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load bootstrap4 %}
+
+
+
+{% block content %}
+
+
+{% if request.user.is_authenticated %}
+    {% include 'navbar_in.html' %}
+{% else %}
+    {% include 'navbar_out.html' %}
+{% endif %}
+
+{% block navbar %}
+{% endblock %}
+<br>
+<br>
+<br>
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %} 
+              <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% else %}
+              <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<main class="px-3">
+<h1>{% trans "Изменение статуса" %}</h1>
+<br>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="w-70 container">
+      <div class="col align-self-center">
+        <label class="form-label">Имя:</label>
+        <input type="text" name="results" class="form-control" value="{{ status.name }}">
+        <br>
+    </div>
+  </div>
+    <button type="submit" class="btn btn-lg btn-secondary border-white bg-white">Изменить</button>
+    </form>
+<!--<form method="post">
+    {% csrf_token %}
+      <div class="w-70 container">
+          <div class="col align-self-center">
+            {{ form.as_p }}
+            <br>
+        </div>
+      </div>
+
+<a href="{% url 'statuses' %}" class="btn btn-lg btn-secondary fw-bold border-white bg-white">{% trans "Создать" %}</a>-->
+</main>
+{% endblock %}

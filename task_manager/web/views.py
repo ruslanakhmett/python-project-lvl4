@@ -5,7 +5,8 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import CreateView
 
-from .forms import SignUpForm, UserLoginForm
+from .forms import SignUpForm, UserLoginForm, StatusCreateForm
+from .models import Statuses
 
 
 class IndexView(View):
@@ -87,7 +88,7 @@ class UsersShowView(View):
 class UpdateUserView(View):
     template_name = "pages/user_update.html"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, **kwargs):
 
         if request.user.is_authenticated:
             form = SignUpForm(instance=request.user)
@@ -113,7 +114,7 @@ class UpdateUserView(View):
             )
             return redirect("login")
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         form = SignUpForm(request.POST, instance=request.user)
 
         if form.is_valid():
@@ -128,7 +129,7 @@ class UpdateUserView(View):
 class DeleteUserView(View):
     template_name = "pages/user_delete.html"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, **kwargs):
         if request.user.is_authenticated:
             user_id_from_link = kwargs["pk"]
             if request.user.id == user_id_from_link:
@@ -137,6 +138,7 @@ class DeleteUserView(View):
                 request,
                 messages.ERROR,
                 "У вас нет прав для изменения другого пользователя.",
+                fail_silently=True,
             )
             return redirect("users")
         else:
@@ -144,16 +146,117 @@ class DeleteUserView(View):
                 request,
                 messages.ERROR,
                 "Вы не авторизованы! Пожалуйста, выполните вход.",
+                fail_silently=True,
             )
             return redirect("login")
 
-    def post(self, request, *args, **kwargs):
-        form = SignUpForm(request.POST)
-
-        if form.is_valid():
-            form.save()
+    def post(self, request, **kwargs):
+        try:
+            user = User.objects.get(id=request.user.id)
+            user.delete()
             messages.add_message(
-                request, messages.SUCCESS, "Пользователь успешно изменен"
+                request,
+                messages.SUCCESS,
+                "Пользователь успешно удален",
+                fail_silently=True,
             )
-            return redirect("users")
+        except Exception as error: 
+            messages.add_message(
+                request,
+                messages.ERROR,
+                error.message,
+                fail_silently=True,
+            )
+        return redirect('users')
+
+
+class StatusesShowView(View):
+    template_name = "pages/statuses.html"
+
+    def get(self, request):
+        return render(request, self.template_name, context={"statuses": Statuses.objects.all()})
+
+
+class StatusesCreateView(View):
+    template_name = "pages/statuses_create.html"
+
+    def get(self, request, **kwargs):
+        form = StatusCreateForm()
         return render(request, self.template_name, context={"form": form})
+    
+    def post(self, request, **kwargs):
+        form = StatusCreateForm(request.POST or None)
+        
+        try:
+            if form.is_valid():
+                Statuses.objects.create(**form.cleaned_data)
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    "Статус успешно создан",
+                    fail_silently=True,
+                )
+                return redirect ('statuses')
+        except Exception as error: 
+            messages.add_message(
+                request,
+                messages.ERROR,
+                error.message,
+                fail_silently=True,
+            )
+        return redirect('statuses')
+    
+class StatusesUpdateView(View):
+    template_name = "pages/statuses_update.html"
+
+    def get(self, request, **kwargs):
+        form = StatusCreateForm()
+        return render(request, self.template_name, context={"form": form, "status": Statuses.objects.get(id=kwargs["pk"])})
+
+    def post(self, request, **kwargs):
+        form = StatusCreateForm(request.POST or None)
+        get_new_value = request.POST.get('results')
+        
+        try:
+            Statuses.objects.filter(id=kwargs["pk"]).update(name=get_new_value) #.update(name=request.name)
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Статус успешно обновлен',
+                fail_silently=True,
+            )
+
+        except Exception as error: 
+            messages.add_message(
+                request,
+                messages.ERROR,
+                error,
+                fail_silently=True,
+            )
+        return redirect('statuses')
+
+
+class StatusesDeleteView(View):
+    template_name = "pages/statuses_delete.html"
+
+    def get(self, request, **kwargs):
+        return render(request, self.template_name, context={"status": Statuses.objects.get(id=kwargs["pk"])})
+
+    def post(self, request, **kwargs):
+        try:
+            status = Statuses.objects.get(id=kwargs["pk"])
+            status.delete()
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                "Статус успешно удален",
+                fail_silently=True,
+            )
+        except Exception as error: 
+            messages.add_message(
+                request,
+                messages.ERROR,
+                error,
+                fail_silently=True,
+            )
+        return redirect('statuses')
