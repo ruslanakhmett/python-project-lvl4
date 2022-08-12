@@ -174,15 +174,34 @@ class StatusesShowView(View):
     template_name = "pages/statuses.html"
 
     def get(self, request):
-        return render(request, self.template_name, context={"statuses": Statuses.objects.all()})
+        if request.user.is_authenticated:
+            return render(request, self.template_name, context={"statuses": Statuses.objects.all()})
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                fail_silently=True,
+            )
+            return redirect("login")
 
 
 class StatusesCreateView(View):
     template_name = "pages/statuses_create.html"
 
     def get(self, request, **kwargs):
-        form = StatusCreateForm()
-        return render(request, self.template_name, context={"form": form})
+        
+        if request.user.is_authenticated:
+            form = StatusCreateForm()
+            return render(request, self.template_name, context={"form": form})
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                fail_silently=True,
+            )
+            return redirect("login")
     
     def post(self, request, **kwargs):
         form = StatusCreateForm(request.POST or None)
@@ -210,11 +229,23 @@ class StatusesUpdateView(View):
     template_name = "pages/statuses_update.html"
 
     def get(self, request, **kwargs):
-        form = StatusCreateForm()
-        return render(request, self.template_name, context={"form": form, "status": Statuses.objects.get(id=kwargs["pk"])})
+        
+        if request.user.is_authenticated:
+            form = StatusCreateForm()
+            return render(request,
+                          self.template_name,
+                          context={"form": form, 
+                                   "status": Statuses.objects.get(id=kwargs["pk"])})
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                fail_silently=True,
+            )
+            return redirect("login")
 
     def post(self, request, **kwargs):
-        form = StatusCreateForm(request.POST or None)
         get_new_value = request.POST.get('results')
         
         try:
@@ -240,7 +271,18 @@ class StatusesDeleteView(View):
     template_name = "pages/statuses_delete.html"
 
     def get(self, request, **kwargs):
-        return render(request, self.template_name, context={"status": Statuses.objects.get(id=kwargs["pk"])})
+        if request.user.is_authenticated:
+            return render(request,
+                        self.template_name,
+                        context={"status": Statuses.objects.get(id=kwargs["pk"])})
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                fail_silently=True,
+            )
+            return redirect("login")
 
     def post(self, request, **kwargs):
         try:
