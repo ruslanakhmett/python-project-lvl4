@@ -5,8 +5,8 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import CreateView
 
-from .forms import SignUpForm, UserLoginForm, StatusCreateForm
-from .models import Statuses
+from .forms import SignUpForm, UserLoginForm, StatusCreateForm, TasksCreateForm
+from .models import Statuses, Tasks
 
 
 class IndexView(View):
@@ -247,7 +247,7 @@ class StatusesUpdateView(View):
 
     def post(self, request, **kwargs):
         get_new_value = request.POST.get('results')
-        
+
         try:
             Statuses.objects.filter(id=kwargs["pk"]).update(name=get_new_value) #.update(name=request.name)
             messages.add_message(
@@ -302,3 +302,97 @@ class StatusesDeleteView(View):
                 fail_silently=True,
             )
         return redirect('statuses')
+
+
+class TasksView(View):
+    template_name = "pages/tasks.html"
+
+    def get(self, request, **kwargs):
+        if request.user.is_authenticated:
+            return render(request,
+                        self.template_name, context={"tasks": Tasks.objects.all()})
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                fail_silently=True,
+            )
+            return redirect("login")
+
+
+class TasksCreateView(View):
+    template_name = "pages/tasks_create.html"
+    
+    def get(self, request, **kwargs):
+        form = TasksCreateForm()
+        if request.user.is_authenticated:
+            return render(request,
+                        self.template_name,
+                        context={"users": User.objects.all().exclude(username="admin"),
+                        "statuses": Statuses.objects.all()})
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                fail_silently=True,
+            )
+            return redirect("login")
+    
+    def post(self, request, **kwargs):
+        form = TasksCreateForm(request.POST or None)
+        
+        get_name = request.POST.get('name')
+        get_text = request.POST.get('text')
+        get_perfomer_id = request.POST.get('perfomer')
+        get_status_id = request.POST.get('status')
+        
+        Tasks.objects.create(
+            name=get_name,
+            description=get_text,
+            perfomer_id=get_perfomer_id,
+            status_id=get_status_id,
+            creator_id=request.user.pk
+        )
+        
+        messages.add_message(
+                request,
+                messages.SUCCESS,
+                "Задача успешно создана.",
+                fail_silently=True,
+            )
+        return redirect("tasks")
+
+        # Statuses.objects.create(**form.cleaned_data)
+        # messages.add_message(
+        #     request,
+        #     messages.SUCCESS,
+        #     "Статус успешно создан",
+        #     fail_silently=True,
+        # )
+        # return redirect ('statuses')
+
+
+
+
+
+
+class TasksUpdateView(View):
+    template_name = "pages/tasks_update.html"
+
+    def get(self, request, **kwargs):
+       pass
+    
+    def post(self, request, **kwargs):
+        pass
+    
+
+class TasksDeleteView(View):
+    template_name = "pages/tasks_delete.html"
+
+    def get(self, request, **kwargs):
+       pass
+    
+    def post(self, request, **kwargs):
+        pass

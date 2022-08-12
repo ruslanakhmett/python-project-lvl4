@@ -2,7 +2,8 @@ from django.urls import path
 
 from .views import (DeleteUserView, IndexView, LoginPageView, LogoutView,
                     SignUpView, UpdateUserView, UsersShowView, StatusesShowView, 
-                    StatusesCreateView, StatusesUpdateView, StatusesDeleteView)
+                    StatusesCreateView, StatusesUpdateView, StatusesDeleteView, TasksView,
+                    TasksCreateView, TasksUpdateView, TasksDeleteView)
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
@@ -16,5 +17,9 @@ urlpatterns = [
     path('statuses/create', StatusesCreateView.as_view(), name='statuses_create'),
     path('statuses/<int:pk>/update/', StatusesUpdateView.as_view(), name='statuses_update'),
     path('statuses/<int:pk>/delete/', StatusesDeleteView.as_view(), name='statuses_delete'),
+    path('tasks/', TasksView.as_view(), name='tasks'),
+    path('tasks/create', TasksCreateView.as_view(), name='tasks_create'),
+    path('tasks/update', TasksUpdateView.as_view(), name='tasks_update'),
+    path('tasks/delete', TasksDeleteView.as_view(), name='tasks_delete'),
 
 ]
