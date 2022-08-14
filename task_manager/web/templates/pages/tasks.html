@@ -92,10 +92,10 @@
     <tbody>
       <tr>
         <th scope="row">{{ task.pk }}</th>
-        <td>{{ task.name }}</td>
-        <td>{{ task.status_id }}</td>
-        <td>{{ task.name }}</td>
-        <td>{{ task.name }}</td>
+        <td><a class="nav-link" href="{{ task.id }}/show/"></a>{{ task.name }}</td>
+        <td>{{ task.status.name }}</td>
+        <td>{{ task.creator.username }}</td>
+        <td>{{ task.perfomer.username }}</td>
         <td>{{ task.created_at|date:'Y-m-d H:i'}}</td>
         <td>
           <a class="nav-link" href="{{ task.pk }}/update/">Изменить</a>

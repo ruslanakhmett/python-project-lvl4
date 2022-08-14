@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load bootstrap4 %}
+
+
+
+{% block content %}
+
+
+{% if request.user.is_authenticated %}
+    {% include 'navbar_in.html' %}
+{% else %}
+    {% include 'navbar_out.html' %}
+{% endif %}
+
+{% block navbar %}
+{% endblock %}
+<br>
+<br>
+<br>
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %} 
+              <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% else %}
+              <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<h1>{% trans "Просмотр задачи" %}</h1>
+<br>
+
+<div class="card text-white bg-dark mb-3" style="max-width: 70rem;">
+    <div class="card-header">{{ task.name }}</div>
+    <div class="card-body">
+      <h5 class="card-title">{{ task.description }}</h5>
+      <h5 class="card-title">Автор:</h5>
+      <p class="card-text">{{ task.creator.username }}</p>
+      <h5 class="card-title">Исполнитель:</h5>
+      <p class="card-text">{{ task.perfomer.username }}</p>
+      <h5 class="card-title">Статус:</h5>
+      <p class="card-text">{{ task.status.name }}</p>
+      <h5 class="card-title">Дата создания:</h5>
+      <p class="card-text">{{ task.created_at }}</p>
+      <h5 class="card-title">Метки:</h5>
+      <p class="card-text">#</p>
+    </div>
+
+    <td>
+        <a class="nav-link" href="update/">Изменить</a>
+        <a class="nav-link" href="delete/">Удалить</a>
+      </td>
+    <br>
+  </div>
+
+<br>
+<br>
+<br>
+{% endblock %}

@@ -32,7 +32,7 @@ class StatusCreateForm(forms.Form):
     name = forms.CharField(label="Имя", widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': 'Имя'}))
 
 
-class TasksCreateForm(forms.Form):
-    name = forms.CharField(max_length=100)
-    description = forms.CharField(max_length=1000)
-    status = forms.ModelMultipleChoiceField(queryset=Statuses.objects.all())
+# class TasksCreateForm(forms.Form):
+#     name = forms.CharField(max_length=100)
+#     description = forms.CharField(max_length=1000)
+#     status = forms.ModelMultipleChoiceField(queryset=Statuses.objects.all())

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load bootstrap4 %}
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+    {% include 'navbar_in.html' %}
+{% else %}
+    {% include 'navbar_out.html' %}
+{% endif %}
+
+{% block navbar %}
+{% endblock %}
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="container wrapper flex-grow-1">
+<h1 class="my-4">Удаление задачи</h1>
+<p>Вы уверены, что хотите удалить {{ task.name }}?</p>
+<form method="post">
+{% csrf_token %}
+<input class="btn btn-danger" type="submit" value="Да, удалить">
+</form>
+</div>
+
+{% endblock %}

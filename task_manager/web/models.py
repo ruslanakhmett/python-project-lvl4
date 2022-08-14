@@ -11,7 +11,7 @@ class Statuses(models.Model):
 
 class Tasks(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
-    description = models.TextField(null=False, blank=False)
+    description = models.TextField(max_length = 1000, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.ForeignKey(Statuses, on_delete=models.CASCADE, related_name='status', blank=True)
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator', blank=True)
