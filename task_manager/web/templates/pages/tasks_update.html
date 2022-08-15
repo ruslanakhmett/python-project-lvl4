@@ -3,9 +3,7 @@
 {% load bootstrap4 %}
 
 
-
 {% block content %}
-
 
 {% if request.user.is_authenticated %}
     {% include 'navbar_in.html' %}
@@ -31,24 +29,8 @@
 <h1>{% trans "Изменение задачи" %}</h1>
 <br>
 
-<!--<main class="px-5">
-  <br>
-  <form method="post">
-      {% csrf_token %}
-        <div class="w-50 container">
-            <div class="col align-self-center">
-              {% for field in form %}
-              {{ field }}
-              {% endfor %}
-              <br>
-              <button class="btn btn-lg btn-secondary fw-bold border-white bg-white" type="submit">{% trans "Войти" %}</button>
-          </div>
-        </div>
-      </main>-->
-
 <form class="form-inline center" method="post">
     {% csrf_token %}
-    
 
   <div class="mb-2">
     <label for="exampleFormControlInput1" class="form-label">Имя</label>
@@ -62,21 +44,28 @@
 
     <div class="col-md">
       <div class="col-auto my-3">
+
         <label class="mr-sm-2" for="inlineFormCustomSelect">Статус</label>
         <select name="status" class="form-select" id="inlineFormCustomSelect">
           <option selected>{{ task.status.name }}</option>
           {% for status in statuses %}
-                <option value="{{ status.id }}">{{ status.name }}</option>
+              {% if status.name != task.status.name %}
+                <option value="{{ status.name }}">{{ status.name }}</option>
+              {% endif %}
           {% endfor %}
         </select>
         <br>
+
         <label class="mr-sm-1" for="inlineFormCustomSelect">Исполнитель</label>
         <select name="perfomer" class="form-select" id="inlineFormCustomSelect">
           <option selected>{{ task.perfomer.username }}</option>
           {% for user in users %}
-          <option value="{{ user.id }}">{{ user.username }}</option>
+            {% if user.username != task.perfomer.username %}
+              <option value="{{ user.username }}">{{ user.username }}</option>
+            {% endif %}
           {% endfor %}
         </select>
+
         <br>
         <div class="form-group"><label for="id_labels">Метки</label>
             <select name="labels" class="form-control" title="" id="id_labels" multiple>
@@ -92,4 +81,5 @@
 <br>
 <br>
 <br>
+
 {% endblock %}

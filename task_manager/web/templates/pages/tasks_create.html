@@ -66,7 +66,7 @@
         <select name="status" class="form-select" id="inlineFormCustomSelect">
           <option selected>----------</option>
           {% for status in statuses %}
-          <option value="{{ status.id }}">{{ status.name }}</option>
+          <option value="{{ status.name }}">{{ status.name }}</option>
           {% endfor %}
         </select>
         <br>
@@ -74,14 +74,15 @@
         <select name="perfomer" class="form-select" id="inlineFormCustomSelect">
           <option selected>----------</option>
           {% for user in users %}
-          <option value="{{ user.id }}">{{ user.username }}</option>
+          <option value="{{ user.username}}">{{ user.username }}</option>
           {% endfor %}
         </select>
         <br>
         <div class="form-group"><label for="id_labels">Метки</label>
             <select name="labels" class="form-control" title="" id="id_labels" multiple>
-            <option value="1">slabela</option>
-            <option value="5">123123</option>
+              {% for label in labels %}
+              <option value="{{ label.name }}">{{ label.name }}</option>
+              {% endfor %}
             </select>
         </div>
         <br>

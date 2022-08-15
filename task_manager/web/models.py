@@ -9,6 +9,11 @@ class Statuses(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class Labels(models.Model):
+    name = models.CharField(max_length=200, null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class Tasks(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
     description = models.TextField(max_length = 1000, null=False, blank=False)
@@ -16,6 +21,10 @@ class Tasks(models.Model):
     status = models.ForeignKey(Statuses, on_delete=models.CASCADE, related_name='status', blank=True)
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator', blank=True)
     perfomer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='perfomer', blank=True)
+    labels = models.ManyToManyField(Labels)
+
+
+
 
 
 
@@ -28,10 +37,6 @@ class Tasks(models.Model):
 # class Profile(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)
 #     avatar = ...
-
-
-#     def __str__(self):
-#         return self.user.username
 
 
 # @receiver(post_save, sender=User)
