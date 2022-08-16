@@ -4,7 +4,7 @@ from .views import (DeleteUserView, IndexView, LoginPageView, LogoutView,
                     SignUpView, UpdateUserView, UsersShowView, StatusesShowView, 
                     StatusesCreateView, StatusesUpdateView, StatusesDeleteView, TasksView,
                     TasksCreateView, TasksUpdateView, TasksDeleteView, TasksShowView,
-                    LabelsView, LabelsCreateView)# LabelsShowView, LabelsUpdateView, LabelsDeleteView)
+                    LabelsView, LabelsCreateView, LabelsUpdateView, LabelsDeleteView)
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
@@ -29,8 +29,7 @@ urlpatterns = [
 
     path('labels/', LabelsView.as_view(), name='labels'),
     path('labels/create/', LabelsCreateView.as_view(), name='labels_create'),
-    # path('labels/<int:pk>/', LabelsShowView.as_view(), name='labels_show'),
-    # path('labels/<int:pk>/update/', LabelsUpdateView.as_view(), name='labels_update'),
-    # path('labels/<int:pk>/delete/', LabelsDeleteView.as_view(), name='labels_delete'),
+    path('labels/<int:pk>/update/', LabelsUpdateView.as_view(), name='labels_update'),
+    path('labels/<int:pk>/delete/', LabelsDeleteView.as_view(), name='labels_delete'),
 
 ]

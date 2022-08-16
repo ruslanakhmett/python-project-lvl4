@@ -1,5 +1,7 @@
 cov:
 	pytest --cov=task_manager
+test-cov:
+	poetry run pytest --cov=task_manager/ --cov-report xml
 test:
 	pytest
 run:

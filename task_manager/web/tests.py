@@ -11,7 +11,7 @@ ROOT_URL = "http://127.0.0.1:8000"
 )
 class WithoutLoginTestCases(TestCase):
 
-    def test_response_status_code(self):
+    def test_200_response_status_code(self):
 
         response = self.client.get(ROOT_URL)
         self.assertEqual(response.status_code, 200)
@@ -21,10 +21,30 @@ class WithoutLoginTestCases(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.get(ROOT_URL + "/users/create/")
         self.assertEqual(response.status_code, 200)
+
+    def test_302_response_status_code(self):
         response = self.client.get(ROOT_URL + "/users/1/update/")
         self.assertEqual(response.status_code, 302)
         response = self.client.get(ROOT_URL + "/users/1/delete/")
         self.assertEqual(response.status_code, 302)
+        response = self.client.get(ROOT_URL + "/statuses/")
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(ROOT_URL + "/statuses/create/")
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(ROOT_URL + "/statuses/1/update/")
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(ROOT_URL + "/tasks/")
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(ROOT_URL + "/tasks/create/")
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(ROOT_URL + "/tasks/1/")
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(ROOT_URL + "/labels/")
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(ROOT_URL + "/labels/create/")
+        self.assertEqual(response.status_code, 302)
+
+
 
     def test_login_logout(self):
         client = Client()

@@ -68,9 +68,10 @@
 
         <br>
         <div class="form-group"><label for="id_labels">Метки</label>
-            <select name="labels" class="form-control" title="" id="id_labels" multiple>
-            <option value="1">slabela</option>
-            <option value="5">123123</option>
+          <select name="labels" class="form-control" title="" id="id_labels" multiple>
+            {% for label in labels %}
+              <option value="{{ label.name }}">{{ label.name }}</option>
+              {% endfor %}
             </select>
         </div>
         <br>

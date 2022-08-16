@@ -320,7 +320,11 @@ class TasksView(View):
     def get(self, request, **kwargs):
         if request.user.is_authenticated:
             return render(request,
-                        self.template_name, context={"tasks": Tasks.objects.all()})
+                        self.template_name,
+                        context={"tasks": Tasks.objects.all(),
+                                 "users": User.objects.all().exclude(username="admin"),
+                                 "labels": Labels.objects.all(),
+                                 "statuses": Statuses.objects.all()})
         else:
             messages.add_message(
                 request,
@@ -395,7 +399,9 @@ class TasksUpdateView(View):
                           self.template_name,
                           context={"task": Tasks.objects.get(id=kwargs["pk"]),
                                    "users": User.objects.all().exclude(username="admin"),
-                                   "statuses": Statuses.objects.all()})
+                                   "statuses": Statuses.objects.all(),
+                                   "labels": Labels.objects.all()
+                                   })
         else:
             messages.add_message(
                 request,
@@ -412,6 +418,11 @@ class TasksUpdateView(View):
             get_text = request.POST.get('text')
             get_perfomer_id = User.objects.get(username=request.POST.get('perfomer')).id
             get_status_id = Statuses.objects.get(name=request.POST.get('status')).id
+            get_labels_list = request.POST.getlist('labels')
+            
+            labels_id_list = []
+            for name in get_labels_list:
+                labels_id_list.append(Labels.objects.get(name=name).id)
 
             try:
                 Tasks.objects.filter(id=kwargs["pk"]).update(
@@ -420,12 +431,18 @@ class TasksUpdateView(View):
                     perfomer_id=get_perfomer_id,
                     status_id=get_status_id,
                     )
+                
+                instance = Tasks.objects.get(id=kwargs["pk"])
+                instance.labels.set(labels_id_list)
+
                 messages.add_message(
                     request,
                     messages.SUCCESS,
                     'Задача успешно обновлена',
                     fail_silently=True,
                 )
+                return redirect("tasks")
+                
 
             except Exception as error: 
                 messages.add_message(
@@ -434,7 +451,7 @@ class TasksUpdateView(View):
                     error,
                     fail_silently=True,
                 )
-            return redirect('tasks')
+            return redirect("tasks")
 
         else:
             messages.add_message(
@@ -553,6 +570,96 @@ class LabelsCreateView(View):
                 request,
                 messages.ERROR,
                 error.message,
+                fail_silently=True,
+            )
+        return redirect('labels')
+    
+    
+class LabelsUpdateView(View):
+    template_name = "pages/labels_update.html"
+
+    def get(self, request, **kwargs):
+        
+        if request.user.is_authenticated:
+            form = LabelCreateForm()
+            return render(request,
+                          self.template_name,
+                          context={"form": form, 
+                                   "label": Labels.objects.get(id=kwargs["pk"])})
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                fail_silently=True,
+            )
+            return redirect("login")
+
+    def post(self, request, **kwargs):
+
+        try:
+            Labels.objects.filter(id=kwargs["pk"]).update(name=request.POST.get('results'))
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Метка успешно обновлена',
+                fail_silently=True,
+            )
+
+        except Exception as error: 
+            messages.add_message(
+                request,
+                messages.ERROR,
+                error,
+                fail_silently=True,
+            )
+        return redirect('labels')
+
+
+class LabelsDeleteView(View):
+    template_name = "pages/labels_delete.html"
+
+    def get(self, request, **kwargs):
+        
+        if request.user.is_authenticated:
+            return render(request,
+                        self.template_name,
+                        context={"label": Labels.objects.get(id=kwargs["pk"])})
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                fail_silently=True,
+            )
+            return redirect("login")
+
+    def post(self, request, **kwargs):
+
+        try:
+            label = Labels.objects.get(id=kwargs["pk"])
+
+            if not label.tasks_set.exists():
+                label.delete()
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    "Метка успешно удалена",
+                    fail_silently=True,
+                )
+            else:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    "Невозможно удалить метку, потому что она используется",
+                    fail_silently=True)
+                redirect('labels')
+
+        except Exception as error: 
+            messages.add_message(
+                request,
+                messages.ERROR,
+                error,
                 fail_silently=True,
             )
         return redirect('labels')
