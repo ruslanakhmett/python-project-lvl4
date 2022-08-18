@@ -22,11 +22,14 @@
 <br>
 <br>
 <div class="container wrapper flex-grow-1">
-<h1 class="my-4">Удаление задачи</h1>
-<p>Вы уверены, что хотите удалить {{ task.name }}?</p>
+<h1 class="my-4">{% trans "Удаление задачи" %}</h1>
+<p>{% trans "Вы уверены, что хотите удалить" %} {{ task.name }}?</p>
 <form method="post">
 {% csrf_token %}
-<input class="btn btn-danger" type="submit" value="Да, удалить">
+
+<div class="col-auto my-1">
+    <button type="submit" class="btn btn-danger">{% trans "Да, удалить" %}</button>
+  </div>
 </form>
 </div>
 

@@ -34,10 +34,10 @@
 <table class="table table-striped table-dark">
     <thead>
       <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Имя пользователя</th>
-        <th scope="col">Полное имя</th>
-        <th scope="col">Дата создания</th>
+        <th scope="col">{% trans "ID" %}</th>
+        <th scope="col">{% trans "Имя пользователя" %}</th>
+        <th scope="col">{% trans "Полное имя" %}</th>
+        <th scope="col">{% trans "Дата создания" %}</th>
       </tr>
     </thead>
     {% for user in users %}
@@ -48,8 +48,8 @@
         <td>{{ user.first_name }} {{ user.last_name }}</td>
         <td>{{ user.date_joined|date:'Y-m-d H:i'}}</td>
         <td>
-          <a class="nav-link" href="{{ user.pk }}/update/">Изменить</a>
-          <a  class="nav-link" href="{{ user.pk }}/delete/">Удалить</a>
+          <a class="nav-link" href="{{ user.pk }}/update/">{% trans "Изменить" %}</a>
+          <a  class="nav-link" href="{{ user.pk }}/delete/">{% trans "Удалить" %}</a>
         </td>
       </tr>
       {% endfor %}

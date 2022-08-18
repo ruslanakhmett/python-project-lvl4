@@ -3,10 +3,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 
 from .forms import SignUpForm, UserLoginForm, StatusCreateForm, LabelCreateForm
 from .models import Statuses, Tasks, Labels
+from .filters import TasksFilter
+from .utils import is_auth
+
+
 
 
 class IndexView(View):
@@ -185,38 +189,20 @@ class StatusesShowView(View):
     template_name = "pages/statuses.html"
 
     def get(self, request):
-        if request.user.is_authenticated:
-            return render(request, self.template_name, context={"statuses": Statuses.objects.all()})
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
+        context = {"statuses": Statuses.objects.all()}
+        return is_auth(self.template_name, request, context)
 
 
 class StatusesCreateView(View):
     template_name = "pages/statuses_create.html"
 
-    def get(self, request, **kwargs):
-        
-        if request.user.is_authenticated:
-            form = StatusCreateForm()
-            return render(request, self.template_name, context={"form": form})
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
-    
-    def post(self, request, **kwargs):
+    def get(self, request):
+        context = {"form": StatusCreateForm()}
+        return is_auth(self.template_name, request, context)
+
+    def post(self, request):
         form = StatusCreateForm(request.POST or None)
-        
+
         try:
             if form.is_valid():
                 Statuses.objects.create(**form.cleaned_data)
@@ -235,26 +221,17 @@ class StatusesCreateView(View):
                 fail_silently=True,
             )
         return redirect('statuses')
-    
+
+
 class StatusesUpdateView(View):
     template_name = "pages/statuses_update.html"
 
+
     def get(self, request, **kwargs):
-        
-        if request.user.is_authenticated:
-            form = StatusCreateForm()
-            return render(request,
-                          self.template_name,
-                          context={"form": form, 
-                                   "status": Statuses.objects.get(id=kwargs["pk"])})
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
+        context = {"form": StatusCreateForm(), 
+                   "status": Statuses.objects.get(id=kwargs["pk"])}
+        return is_auth(self.template_name, request, context)
+
 
     def post(self, request, **kwargs):
 
@@ -281,18 +258,8 @@ class StatusesDeleteView(View):
     template_name = "pages/statuses_delete.html"
 
     def get(self, request, **kwargs):
-        if request.user.is_authenticated:
-            return render(request,
-                        self.template_name,
-                        context={"status": Statuses.objects.get(id=kwargs["pk"])})
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
+        context = {"status": Statuses.objects.get(id=kwargs["pk"])}
+        return is_auth(self.template_name, request, context)
 
     def post(self, request, **kwargs):
         try:
@@ -314,48 +281,31 @@ class StatusesDeleteView(View):
         return redirect('statuses')
 
 
-class TasksView(View):
+class TasksListView(ListView):
     template_name = "pages/tasks.html"
+    model = Tasks
 
-    def get(self, request, **kwargs):
-        if request.user.is_authenticated:
-            return render(request,
-                        self.template_name,
-                        context={"tasks": Tasks.objects.all(),
-                                 "users": User.objects.all().exclude(username="admin"),
-                                 "labels": Labels.objects.all(),
-                                 "statuses": Statuses.objects.all()})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.GET.get('self_tasks') == 'on':
+            queryset = self.get_queryset().filter(creator_id=self.request.user.pk)
         else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
+            queryset = self.get_queryset()
+
+        context['filter'] = TasksFilter(self.request.GET, queryset=queryset)
+        return context
 
 
 class TasksCreateView(View):
     template_name = "pages/tasks_create.html"
     
     def get(self, request, **kwargs):
+        context = {"users": User.objects.all().exclude(username="admin"),
+                   "statuses": Statuses.objects.all(),
+                   "labels": Labels.objects.all()}
+        return is_auth(self.template_name, request, context)
 
-        if request.user.is_authenticated:
-            return render(request,
-                        self.template_name,
-                        context={"users": User.objects.all().exclude(username="admin"),
-                        "statuses": Statuses.objects.all(),
-                        "labels": Labels.objects.all()
-                        })
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
-    
     def post(self, request, **kwargs):
 
         if request.user.is_authenticated:
@@ -377,8 +327,7 @@ class TasksCreateView(View):
                 creator_id=request.user.pk,
 
             )
-            instance.labels.add(*labels_id_list)
-
+            instance.labels.add(*labels_id_list)  # add m2m data
 
             messages.add_message(
                     request,
@@ -394,22 +343,13 @@ class TasksUpdateView(View):
 
     def get(self, request, **kwargs):
 
-        if request.user.is_authenticated:
-            return render(request,
-                          self.template_name,
-                          context={"task": Tasks.objects.get(id=kwargs["pk"]),
-                                   "users": User.objects.all().exclude(username="admin"),
-                                   "statuses": Statuses.objects.all(),
-                                   "labels": Labels.objects.all()
-                                   })
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("tasks")
+        context = {"task": Tasks.objects.get(id=kwargs["pk"]),
+                   "users": User.objects.all().exclude(username="admin"),
+                   "statuses": Statuses.objects.all(),
+                   "all_labels": Labels.objects.all(),
+                   "used_labels": Tasks.objects.get(id=kwargs["pk"]).labels.all()}
+        return is_auth(self.template_name, request, context)
+
 
     def post(self, request, **kwargs):
 
@@ -433,7 +373,7 @@ class TasksUpdateView(View):
                     )
                 
                 instance = Tasks.objects.get(id=kwargs["pk"])
-                instance.labels.set(labels_id_list)
+                instance.labels.set(labels_id_list)  # update m2m data from list
 
                 messages.add_message(
                     request,
@@ -460,7 +400,7 @@ class TasksUpdateView(View):
                 "Вы не авторизованы! Пожалуйста, выполните вход.",
                 fail_silently=True,
             )
-            return redirect("tasks")
+            return redirect("login")
 
 
 class TasksDeleteView(View):
@@ -468,6 +408,7 @@ class TasksDeleteView(View):
 
     def get(self, request, **kwargs):
         task = Tasks.objects.get(id=kwargs["pk"])
+        
         if request.user.is_authenticated and request.user.pk == task.creator_id:
             return render(request,
                         self.template_name,
@@ -479,6 +420,7 @@ class TasksDeleteView(View):
                 "Задачу может удалить только её автор",
                 fail_silently=True,
             )
+            return redirect('tasks')
 
     def post(self, request, **kwargs):
         task = Tasks.objects.get(id=kwargs["pk"])
@@ -500,58 +442,32 @@ class TasksDeleteView(View):
                     fail_silently=True,
                 )
             return redirect('tasks')
-        
-class TasksShowView(View):
+
+
+class TaskDetailsShowView(View):
     template_name = "pages/task_show.html"
 
     def get(self, request, **kwargs):
-        if request.user.is_authenticated:
-            return render(request,
-                          self.template_name,
-                          context={"task": Tasks.objects.get(id=kwargs["pk"])})
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
+        context = {"task": Tasks.objects.get(id=kwargs["pk"])}
+        return is_auth(self.template_name, request, context)
 
 
 class LabelsView(View):
     template_name = "pages/labels.html"
 
     def get(self, request):
-        if request.user.is_authenticated:
-            return render(request, self.template_name, context={"labels": Labels.objects.all()})
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
-        
-        
+        context = {"labels": Labels.objects.all()}
+        return is_auth(self.template_name, request, context)
+
+
 class LabelsCreateView(View):
     template_name = "pages/labels_create.html"
 
-    def get(self, request, **kwargs):
-        
-        if request.user.is_authenticated:
-            form = LabelCreateForm()
-            return render(request, self.template_name, context={"form": form})
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
-    
+    def get(self, request):
+        context = {"form": LabelCreateForm()}
+        return is_auth(self.template_name, request, context)
+
+
     def post(self, request, **kwargs):
         form = LabelCreateForm(request.POST or None)
         
@@ -579,21 +495,9 @@ class LabelsUpdateView(View):
     template_name = "pages/labels_update.html"
 
     def get(self, request, **kwargs):
-        
-        if request.user.is_authenticated:
-            form = LabelCreateForm()
-            return render(request,
-                          self.template_name,
-                          context={"form": form, 
-                                   "label": Labels.objects.get(id=kwargs["pk"])})
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
+        context = {"form": LabelCreateForm(), 
+                   "label": Labels.objects.get(id=kwargs["pk"])}
+        return is_auth(self.template_name, request, context)
 
     def post(self, request, **kwargs):
 
@@ -620,19 +524,8 @@ class LabelsDeleteView(View):
     template_name = "pages/labels_delete.html"
 
     def get(self, request, **kwargs):
-        
-        if request.user.is_authenticated:
-            return render(request,
-                        self.template_name,
-                        context={"label": Labels.objects.get(id=kwargs["pk"])})
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
-                fail_silently=True,
-            )
-            return redirect("login")
+        context = {"label": Labels.objects.get(id=kwargs["pk"])}
+        return is_auth(self.template_name, request, context)
 
     def post(self, request, **kwargs):
 

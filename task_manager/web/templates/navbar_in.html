@@ -13,10 +13,8 @@
             <a class="nav-link fw-bold py-1 px-0 active" href="{% url 'tasks' %}">{% trans "Задачи" %}</a>
             <form class="nav-link fw-bold py-1 px-0 active {% if page == selected_page %}active{% endif %}" id="form-id" action="{% url 'logout' %}" method="post">
               {% csrf_token %}
-              <a onclick="document.getElementById('form-id').submit();">Выход</a>
+              <a onclick="document.getElementById('form-id').submit();">{% trans "Выход" %}</a>
           </form>
-
-          <!--<a class="nav-link {% if page == selected_page %}active{% endif %}" onclick="document.getElementById('form-id').submit();">Add page</a>-->
           </nav>
         </div>
       </header>
