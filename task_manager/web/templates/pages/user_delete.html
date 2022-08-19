@@ -23,7 +23,7 @@
 <br>
 <div class="container wrapper flex-grow-1">
 <h1 class="my-4">{% trans "Удаление пользователя" %}</h1>
-<p>{% trans "Вы уверены, что хотите удалить Ruslan Akhmetshin?" %}</p>
+<p>{% trans "Вы уверены, что хотите удалить {{  }}?" %}</p>
 <form method="post">
 {% csrf_token %}
 <input class="btn btn-danger" type="submit" value={% trans "Да, удалить" %}>

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import CreateView, ListView
+from django.utils.translation import gettext_lazy as _
 
 from .forms import SignUpForm, UserLoginForm, StatusCreateForm, LabelCreateForm
 from .models import Statuses, Tasks, Labels
@@ -21,7 +22,7 @@ class IndexView(View):
 class LogoutView(View):
     def post(self, request):
         logout(request)
-        messages.add_message(request, messages.SUCCESS, "Вы разлогинены")
+        messages.add_message(request, messages.SUCCESS, _("Вы разлогинены"))
         return redirect("index")
 
 
@@ -43,15 +44,15 @@ class LoginPageView(View):
                 login(request, user)
                 messages.add_message(request,
                                      messages.SUCCESS,
-                                     "Вы залогинены")
+                                     _("Вы залогинены"))
                 return redirect("index")
             else:
                 messages.add_message(
                     request,
                     messages.ERROR,
-                    "Пожалуйста, введите правильные имя пользователя и пароль. \
+                    _("Пожалуйста, введите правильные имя пользователя и пароль. \
                                          Оба поля могут быть \
-                                             чувствительны к регистру.",
+                                             чувствительны к регистру."),
                 )
         return render(request, self.template_name, context={"form": form})
 
@@ -72,7 +73,7 @@ class SignUpView(CreateView):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                "Пользователь успешно зарегистрирован"
+                _("Пользователь успешно зарегистрирован")
             )
             return redirect("login")
         return render(request, self.template_name, {"form": form})
@@ -105,7 +106,7 @@ class UpdateUserView(View):
             messages.add_message(
                 request,
                 messages.ERROR,
-                "У вас нет прав для изменения другого пользователя.",
+                _("У вас нет прав для изменения другого пользователя."),
                 fail_silently=True,
             )
             return redirect("users")
@@ -113,7 +114,7 @@ class UpdateUserView(View):
             messages.add_message(
                 request,
                 messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                _("Вы не авторизованы! Пожалуйста, выполните вход."),
                 fail_silently=True,
             )
             return redirect("login")
@@ -124,7 +125,9 @@ class UpdateUserView(View):
         if form.is_valid():
             form.save()
             messages.add_message(
-                request, messages.SUCCESS, "Пользователь успешно изменен"
+                request, 
+                messages.SUCCESS,
+                _("Пользователь успешно изменен")
             )
             return redirect("users")
         return render(request, self.template_name, context={"form": form})
@@ -141,7 +144,7 @@ class DeleteUserView(View):
             messages.add_message(
                 request,
                 messages.ERROR,
-                "У вас нет прав для изменения другого пользователя.",
+                _("У вас нет прав для изменения другого пользователя."),
                 fail_silently=True,
             )
             return redirect("users")
@@ -149,7 +152,7 @@ class DeleteUserView(View):
             messages.add_message(
                 request,
                 messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                _("Вы не авторизованы! Пожалуйста, выполните вход."),
                 fail_silently=True,
             )
             return redirect("login")
@@ -161,7 +164,7 @@ class DeleteUserView(View):
             messages.add_message(
                 request,
                 messages.ERROR,
-                'Невозможно удалить пользователя, потому что он используется',
+                _("Невозможно удалить пользователя, потому что он используется"),
                 fail_silently=True)
             return redirect('users')
 
@@ -172,7 +175,7 @@ class DeleteUserView(View):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    "Пользователь успешно удален",
+                    _("Пользователь успешно удален"),
                     fail_silently=True,
                 )
             except Exception as error: 
@@ -209,7 +212,7 @@ class StatusesCreateView(View):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    "Статус успешно создан",
+                    _("Статус успешно создан"),
                     fail_silently=True,
                 )
                 return redirect ('statuses')
@@ -240,7 +243,7 @@ class StatusesUpdateView(View):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Статус успешно обновлен',
+                _("Статус успешно обновлен"),
                 fail_silently=True,
             )
 
@@ -268,7 +271,7 @@ class StatusesDeleteView(View):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                "Статус успешно удален",
+                _("Статус успешно удален"),
                 fail_silently=True,
             )
         except Exception as error: 
@@ -332,7 +335,7 @@ class TasksCreateView(View):
             messages.add_message(
                     request,
                     messages.SUCCESS,
-                    "Задача успешно создана.",
+                    _("Задача успешно создана."),
                     fail_silently=True,
                 )
             return redirect("tasks")
@@ -378,7 +381,7 @@ class TasksUpdateView(View):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    'Задача успешно обновлена',
+                    _("Задача успешно обновлена"),
                     fail_silently=True,
                 )
                 return redirect("tasks")
@@ -397,7 +400,7 @@ class TasksUpdateView(View):
             messages.add_message(
                 request,
                 messages.ERROR,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                _("Вы не авторизованы! Пожалуйста, выполните вход."),
                 fail_silently=True,
             )
             return redirect("login")
@@ -417,7 +420,7 @@ class TasksDeleteView(View):
             messages.add_message(
                 request,
                 messages.ERROR,
-                "Задачу может удалить только её автор",
+                _("Задачу может удалить только её автор"),
                 fail_silently=True,
             )
             return redirect('tasks')
@@ -430,7 +433,7 @@ class TasksDeleteView(View):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    "Задача успешно удалена",
+                    _("Задача успешно удалена"),
                     fail_silently=True,
                 )
 
@@ -477,7 +480,7 @@ class LabelsCreateView(View):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    "Метка успешно создана",
+                    _("Метка успешно создана"),
                     fail_silently=True,
                 )
                 return redirect ('labels')
@@ -506,7 +509,7 @@ class LabelsUpdateView(View):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Метка успешно обновлена',
+                _("Метка успешно обновлена"),
                 fail_silently=True,
             )
 
@@ -537,14 +540,14 @@ class LabelsDeleteView(View):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    "Метка успешно удалена",
+                    _("Метка успешно удалена"),
                     fail_silently=True,
                 )
             else:
                 messages.add_message(
                     request,
                     messages.ERROR,
-                    "Невозможно удалить метку, потому что она используется",
+                    _("Невозможно удалить метку, потому что она используется"),
                     fail_silently=True)
                 redirect('labels')
 

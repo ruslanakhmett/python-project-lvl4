@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 
@@ -23,10 +24,10 @@ class Tasks(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
     description = models.TextField(max_length = 1000, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    status = models.ForeignKey(Statuses, on_delete=models.CASCADE, related_name='status', blank=True, verbose_name='Статус')
+    status = models.ForeignKey(Statuses, on_delete=models.CASCADE, related_name='status', blank=True, verbose_name=_('Статус'))
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator', blank=True)
-    perfomer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='perfomer', blank=True, verbose_name='Исполнитель')
-    labels = models.ManyToManyField(Labels, verbose_name='Метка')
+    perfomer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='perfomer', blank=True, verbose_name=_('Исполнитель'))
+    labels = models.ManyToManyField(Labels, verbose_name=_('Метка'))
     
     def __str__(self):
         return self.name
