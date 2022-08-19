@@ -32,6 +32,8 @@ msgstr "Password"
 #: task_manager/web/templates/pages/tasks_create.html:39
 #: task_manager/web/templates/pages/tasks_create.html:40
 #: task_manager/web/templates/pages/tasks_update.html:36
+#: task_manager/web/templates/pages/labels_update.html:39
+#: task_manager/web/templates/pages/statuses_update.html:39
 msgid "Имя"
 msgstr "Name"
 
@@ -42,12 +44,14 @@ msgstr "Last Name"
 #: task_manager/web/models.py:27 task_manager/web/templates/pages/tasks.html:88
 #: task_manager/web/templates/pages/tasks_create.html:50
 #: task_manager/web/templates/pages/tasks_update.html:48
+#: task_manager/web/templates/pages/task_show.html:51
 msgid "Статус"
 msgstr "Status"
 
 #: task_manager/web/models.py:29 task_manager/web/templates/pages/tasks.html:90
 #: task_manager/web/templates/pages/tasks_create.html:58
 #: task_manager/web/templates/pages/tasks_update.html:59
+#: task_manager/web/templates/pages/task_show.html:47
 msgid "Исполнитель"
 msgstr "Perfomer"
 
@@ -80,6 +84,7 @@ msgstr "Statuses"
 #: task_manager/web/templates/pages/labels.html:31
 #: task_manager/web/templates/pages/tasks_create.html:66
 #: task_manager/web/templates/pages/tasks_update.html:70
+#: task_manager/web/templates/pages/task_show.html:60
 msgid "Метки"
 msgstr "Labels"
 
@@ -130,6 +135,7 @@ msgstr "ID"
 #: task_manager/web/templates/pages/statuses.html:44
 #: task_manager/web/templates/pages/tasks.html:91
 #: task_manager/web/templates/pages/users.html:40
+#: task_manager/web/templates/pages/task_show.html:55
 msgid "Дата создания"
 msgstr "Created at"
 
@@ -168,11 +174,6 @@ msgstr "Delete label"
 msgid "Изменение метки"
 msgstr "Edit label"
 
-#: task_manager/web/templates/pages/labels_update.html:39
-#: task_manager/web/templates/pages/statuses_update.html:39
-msgid "Имя:"
-msgstr "Name:"
-
 #: task_manager/web/templates/pages/login.html:42
 msgid "Войти"
 msgstr "Log in"
@@ -196,27 +197,7 @@ msgstr "Edit status"
 
 #: task_manager/web/templates/pages/task_show.html:31
 msgid "Просмотр задачи"
-msgstr "Show task"
-
-#: task_manager/web/templates/pages/task_show.html:38
-msgid "Автор:"
-msgstr "Author:"
-
-#: task_manager/web/templates/pages/task_show.html:40
-msgid "Исполнитель:"
-msgstr "Perfomer:"
-
-#: task_manager/web/templates/pages/task_show.html:42
-msgid "Статус:"
-msgstr "Status:"
-
-#: task_manager/web/templates/pages/task_show.html:44
-msgid "Дата создания:"
-msgstr "Created at:"
-
-#: task_manager/web/templates/pages/task_show.html:46
-msgid "Метки:"
-msgstr "Labels:"
+msgstr "Task view"
 
 #: task_manager/web/templates/pages/tasks.html:73
 msgid "Только свои задачи"
@@ -227,6 +208,7 @@ msgid "Показать"
 msgstr "Submit"
 
 #: task_manager/web/templates/pages/tasks.html:89
+#: task_manager/web/templates/pages/task_show.html:43
 msgid "Автор"
 msgstr "Author"
 

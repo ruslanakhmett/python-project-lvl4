@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import CreateView, ListView
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.decorators import login_required
 
 from .forms import SignUpForm, UserLoginForm, StatusCreateForm, LabelCreateForm
 from .models import Statuses, Tasks, Labels
@@ -287,8 +288,9 @@ class StatusesDeleteView(View):
 class TasksListView(ListView):
     template_name = "pages/tasks.html"
     model = Tasks
-
+    
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
 
         if self.request.GET.get('self_tasks') == 'on':
@@ -339,6 +341,7 @@ class TasksCreateView(View):
                     fail_silently=True,
                 )
             return redirect("tasks")
+
 
 
 class TasksUpdateView(View):
@@ -466,10 +469,9 @@ class LabelsView(View):
 class LabelsCreateView(View):
     template_name = "pages/labels_create.html"
 
-    def get(self, request):
+    def get(self, request, **kwargs):
         context = {"form": LabelCreateForm()}
         return is_auth(self.template_name, request, context)
-
 
     def post(self, request, **kwargs):
         form = LabelCreateForm(request.POST or None)

@@ -3,8 +3,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
-from .models import Statuses, Tasks
-
 
 class UserLoginForm(forms.Form):
     username = forms.CharField(
@@ -31,12 +29,7 @@ class SignUpForm(UserCreationForm):
 
 class StatusCreateForm(forms.Form):
     name = forms.CharField(label=_("Имя"), widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': _('Имя')}))
-    
+
+
 class LabelCreateForm(forms.Form):
     name = forms.CharField(label=_("Имя"), widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': _('Имя')}))
-
-
-# class TasksCreateForm(forms.Form):
-#     name = forms.CharField(max_length=100)
-#     description = forms.CharField(max_length=1000)
-#     status = forms.ModelMultipleChoiceField(queryset=Statuses.objects.all())

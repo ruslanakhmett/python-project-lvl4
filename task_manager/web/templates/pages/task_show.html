@@ -31,31 +31,45 @@
 <h1>{% trans "Просмотр задачи" %}</h1>
 <br>
 
-<div class="card text-white bg-dark mb-3" style="max-width: 70rem;">
-    <div class="card-header">{{ task.name }}</div>
-    <div class="card-body">
-      <h5 class="card-title">{{ task.description }}</h5>
-      <h5 class="card-title">{% trans "Автор:" %}</h5>
-      <p class="card-text">{{ task.creator.username }}</p>
-      <h5 class="card-title">{% trans "Исполнитель:" %}</h5>
-      <p class="card-text">{{ task.perfomer.username }}</p>
-      <h5 class="card-title">{% trans "Статус:" %}</h5>
-      <p class="card-text">{{ task.status.name }}</p>
-      <h5 class="card-title">{% trans "Дата создания:" %}</h5>
-      <p class="card-text">{{ task.created_at }}</p>
-      <h5 class="card-title">{% trans "Метки:" %}</h5>
-      {% for label in task.labels.all %}
-      <p class="card-text">{{ label.name }}</p>
-      {% endfor %}
-    </div>
-
-    <td>
-        <a class="nav-link" href="update/">{% trans "Изменить" %}</a>
-        <a class="nav-link" href="delete/">{% trans "Удалить" %}</a>
-      </td>
-    <br>
+<div class="card">
+  <div class="card-header bg-secondary text-white">
+    <h2>{{ task.name }}</h2>
   </div>
-
+  <div class="card-body bg-dark">
+    <p>{{ task.description }}</p>
+    <hr>
+    <div class="container">
+      <div class="row p-1">
+        <div class="col">{% trans "Автор" %}:</div>
+        <div class="col">{{ task.creator.username }}</div>
+      </div>
+      <div class="row p-1">
+        <div class="col">{% trans "Исполнитель" %}:</div>
+        <div class="col">{{ task.perfomer.username }}</div>
+      </div>
+      <div class="row p-1">
+        <div class="col">{% trans "Статус" %}:</div>
+        <div class="col">{{ task.status.name }}</div>
+      </div>
+      <div class="row p-1">
+        <div class="col">{% trans "Дата создания" %}:</div>
+        <div class="col">{{ task.created_at|date:'Y-m-d H:i'}}</div>
+      </div>
+      <div class="row p-1">
+        <div class="col">
+          <h6>{% trans "Метки" %}:</h6>
+            {% for label in task.labels.all %}
+            {{ label.name }}
+            {% endfor %}
+        </div>
+      </div>
+        <br>
+        <br>
+          <a class="nav-link" href="update/">{% trans "Изменить" %}</a>
+          <a class="nav-link" href="delete/">{% trans "Удалить" %}</a>
+    </div>
+  </div>
+</div>
 <br>
 <br>
 <br>

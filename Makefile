@@ -3,7 +3,7 @@ cov:
 test-cov:
 	poetry run pytest --cov=task_manager/ --cov-report xml
 test:
-	pytest
+	pytest --capture=no
 run:
 	python3 manage.py runserver
 req:

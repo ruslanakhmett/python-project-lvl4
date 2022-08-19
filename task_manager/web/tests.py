@@ -1,7 +1,10 @@
 from django.contrib.auth.models import User
 from django.test import Client, RequestFactory, TestCase, override_settings
+from django.urls import reverse
 
 from .views import UpdateUserView, DeleteUserView
+from .models import Labels, Statuses, Tasks
+
 
 ROOT_URL = "http://127.0.0.1:8000"
 
@@ -9,10 +12,9 @@ ROOT_URL = "http://127.0.0.1:8000"
 @override_settings(
     STATICFILES_STORAGE="django.contrib.staticfiles.storage.StaticFilesStorage"
 )
-class WithoutLoginTestCases(TestCase):
+class CheckStatusCodeNoLoginTestCases(TestCase):
 
     def test_200_response_status_code(self):
-
         response = self.client.get(ROOT_URL)
         self.assertEqual(response.status_code, 200)
         response = self.client.get(ROOT_URL + "/login/")
@@ -22,22 +24,15 @@ class WithoutLoginTestCases(TestCase):
         response = self.client.get(ROOT_URL + "/users/create/")
         self.assertEqual(response.status_code, 200)
 
+
     def test_302_response_status_code(self):
-        response = self.client.get(ROOT_URL + "/users/1/update/")
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get(ROOT_URL + "/users/1/delete/")
-        self.assertEqual(response.status_code, 302)
         response = self.client.get(ROOT_URL + "/statuses/")
         self.assertEqual(response.status_code, 302)
         response = self.client.get(ROOT_URL + "/statuses/create/")
         self.assertEqual(response.status_code, 302)
-        response = self.client.get(ROOT_URL + "/statuses/1/update/")
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get(ROOT_URL + "/tasks/")
-        self.assertEqual(response.status_code, 302)
+        # response = self.client.get(ROOT_URL + "/tasks/")
+        # self.assertEqual(response.status_code, 302)
         response = self.client.get(ROOT_URL + "/tasks/create/")
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get(ROOT_URL + "/tasks/1/")
         self.assertEqual(response.status_code, 302)
         response = self.client.get(ROOT_URL + "/labels/")
         self.assertEqual(response.status_code, 302)
@@ -45,109 +40,164 @@ class WithoutLoginTestCases(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
+@override_settings(
+    STATICFILES_STORAGE="django.contrib.staticfiles.storage.StaticFilesStorage"
+)
+class CheckStatusCodeYesLoginTestCases(TestCase):
 
-    def test_login_logout(self):
-        client = Client()
-        response = client.post(
-            "/login/", {"username": "sergio", "password": "12345test"}
-        )
+    def setUp(self):
+        self.credentials = {
+            'username': 'sergio',
+            'password': '12345test'}
+        User.objects.create_user(**self.credentials)
+        self.client.login(username='sergio', password='12345test')
+
+    def test_200_response_status_code(self):
+        response = self.client.get(ROOT_URL + "/statuses/")
         self.assertEqual(response.status_code, 200)
-        response = client.post("/logout/")
-        self.assertEqual(response.status_code, 302)
+        response = self.client.get(ROOT_URL + "/statuses/create/")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(ROOT_URL + "/tasks/")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(ROOT_URL + "/tasks/create/")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(ROOT_URL + "/labels/")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(ROOT_URL + "/labels/create/")
+        self.assertEqual(response.status_code, 200)
 
 
 
 @override_settings(
     STATICFILES_STORAGE="django.contrib.staticfiles.storage.StaticFilesStorage"
 )
-class WithLoginTestCases(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        User.objects.create(
-            username="sergio",
-            first_name="Сергей",
-            last_name="Иванов",
-            password="12345test",
-        )
+class LogInLogOutTestCases(TestCase):
+
+    def setUp(self):
+        self.credentials = {
+            'username': 'sergio',
+            'password': '12345test'}
+        User.objects.create_user(**self.credentials)
+
+    def test_login(self):
+        response = self.client.post('/login/', self.credentials, follow=True)
+        self.assertTrue(response.context['user'].is_authenticated)
+
+    def test_logout(self):
+        response = self.client.post("/logout/", follow=True)
+        self.assertFalse(response.context['user'].is_authenticated)
+
+
+@override_settings(
+    STATICFILES_STORAGE="django.contrib.staticfiles.storage.StaticFilesStorage"
+)
+class UserPagesTestCases(TestCase):
+
+    def setUp(self):
+        self.credentials = {
+            'username': 'sergio',
+            'password': '12345test'}
+        User.objects.create_user(**self.credentials)
+        self.client.login(username='sergio', password='12345test')
 
     def test_allowed_user_update_page(self):
-        user = User.objects.get(username="sergio")
         kwargs = {"pk": 1}
         factory = RequestFactory()
         request = factory.get("/users/1/update/", kwargs=kwargs)
-        request.user = user
+        request.user = User.objects.get(username="sergio")
         response = UpdateUserView.as_view()(request, **kwargs)
         self.assertEqual(response.status_code, 200)
 
     def test_not_allowed_user_update_page(self):
-        user = User.objects.get(username="sergio")
         kwargs = {"pk": 2}
         factory = RequestFactory()
         request = factory.get("/users/1/update/", kwargs=kwargs)
-        request.user = user
+        request.user = User.objects.get(username="sergio")
         response = UpdateUserView.as_view()(request, **kwargs)
         self.assertEqual(response.status_code, 302)
 
     def test_allowed_user_delete_page(self):
-        user = User.objects.get(username="sergio")
         kwargs = {"pk": 1}
         factory = RequestFactory()
         request = factory.get("/users/1/delete/", kwargs=kwargs)
-        request.user = user
+        request.user = User.objects.get(username="sergio")
         response = DeleteUserView.as_view()(request, **kwargs)
         self.assertEqual(response.status_code, 200)
 
     def test_not_allowed_user_delete_page(self):
-        user = User.objects.get(username="sergio")
         kwargs = {"pk": 2}
         factory = RequestFactory()
         request = factory.get("/users/1/delete/", kwargs=kwargs)
-        request.user = user
+        request.user = User.objects.get(username="sergio")
         response = DeleteUserView.as_view()(request, **kwargs)
         self.assertEqual(response.status_code, 302)
 
     def test_delete_user(self):
-        user = User.objects.get(username="sergio")
         kwargs = {"pk": 1}
         factory = RequestFactory()
         request = factory.post("/users/1/delete/", kwargs=kwargs)
-        request.user = user
+        request.user = User.objects.get(username="sergio")
         response = DeleteUserView.as_view()(request, **kwargs)
         self.assertEqual(response.status_code, 302)
         user_exist = User.objects.filter(username="sergio").count()
         self.assertEqual(user_exist, False)
 
 
+@override_settings(
+    STATICFILES_STORAGE="django.contrib.staticfiles.storage.StaticFilesStorage"
+)
+class CreateTestCases(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.labels_url = reverse('labels_create')
+        self.statuses_url = reverse('statuses_create')
+        self.client.login(username='sergio', password='12345test')
+
+    def test_create_label(self):
+        response = self.client.post(self.labels_url, {
+            'name': 'label1'
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(Labels.objects.get(id=1).name, 'label1')
+
+    def test_create_status(self):
+        response = self.client.post(self.statuses_url, {
+            'name': 'status1'
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(Statuses.objects.get(id=1).name, 'status1')
 
 
+@override_settings(
+    STATICFILES_STORAGE="django.contrib.staticfiles.storage.StaticFilesStorage"
+)
+class CreateTaskTestCases(TestCase):
+    
+    def setUp(self):
+        self.client = Client()
+        self.task_url = reverse('tasks_create')
+        self.credentials = {
+            'username': 'sergio',
+            'password': '12345test'}
+        User.objects.create_user(**self.credentials)
+        Statuses.objects.create(name='status1')
+        Labels.objects.create(name='label1')
+        self.client.login(username='sergio', password='12345test')
 
 
+    def test_create_task(self):
+        response = self.client.post(self.task_url, {
+            'name': 'task1',
+            'text': 'description1',
+            'perfomer': 'sergio',
+            'status': 'status1',
+            'labels':['label1'],
+        })
 
-
-
-
-
-# class UserModelTest(TestCase):
-#     @classmethod
-#     def setUpTestData(cls):
-#         User.objects.create(
-#             username="sergio",
-#             first_name="Сергей",
-#             last_name="Иванов",
-#             password="12345test",
-#         )
-
-#     def test_username(self):
-#         user = User.objects.get(id=1)
-#         recorded_name = user.username
-#         self.assertEqual(recorded_name, "sergio")
-
-#     def test_first_name(self):
-#         user = User.objects.get(id=1)
-#         recorded_name = user.first_name
-#         self.assertEqual(recorded_name, "Сергей")
-
-#     def test_last_name(self):
-#         user = User.objects.get(id=1)
-#         recorded_name = user.last_name
-#         self.assertEqual(recorded_name, "Иванов")
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(Tasks.objects.get(id=1).name, 'task1')
+        self.assertEquals(Tasks.objects.get(id=1).description, 'description1')
+        self.assertEquals(Tasks.objects.get(id=1).creator_id, 1)
+        self.assertEquals(Tasks.objects.get(id=1).perfomer_id, 1)
+        self.assertEquals(Tasks.objects.get(id=1).status_id, 1)

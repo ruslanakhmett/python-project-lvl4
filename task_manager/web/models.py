@@ -35,16 +35,16 @@ class Tasks(models.Model):
 
 
 
+
+#for extend user profile:
+
 # from django.db.models.signals import post_save
 # from django.dispatch import receiver
 
 
-#for extend user profile:
-
 # class Profile(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)
 #     avatar = ...
-
 
 # @receiver(post_save, sender=User)
 # def update_profile_signal(sender, instance, created, **kwargs):
