@@ -310,7 +310,7 @@ msgid "Задача успешно создана."
 msgstr "The task has been successfully created."
 
 #: task_manager/web/views.py:384
-msgid "Задача успешно обновлена"
+msgid "Задача успешно изменена"
 msgstr "Task updated successfully"
 
 #: task_manager/web/views.py:423

@@ -386,7 +386,7 @@ class TasksUpdateView(View):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    _("Задача успешно обновлена"),
+                    _("Задача успешно изменена"),
                     fail_silently=True,
                 )
                 return redirect("tasks")
