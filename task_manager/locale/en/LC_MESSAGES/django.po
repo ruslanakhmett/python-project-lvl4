@@ -290,7 +290,7 @@ msgid "Невозможно удалить пользователя, потом�
 msgstr "Cannot delete user because it is in use"
 
 #: task_manager/web/views.py:178
-msgid "Пользователь успешно удален"
+msgid "Пользователь успешно удалён"
 msgstr "User deleted successfully"
 
 #: task_manager/web/views.py:215

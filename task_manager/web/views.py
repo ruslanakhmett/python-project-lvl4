@@ -176,7 +176,7 @@ class DeleteUserView(View):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    _("Пользователь успешно удален"),
+                    _("Пользователь успешно удалён"),
                     fail_silently=True,
                 )
             except Exception as error: 
