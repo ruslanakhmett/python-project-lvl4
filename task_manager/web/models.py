@@ -25,7 +25,7 @@ class Tasks(models.Model):
     description = models.TextField(max_length = 1000, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.ForeignKey(Statuses, on_delete=models.CASCADE, related_name='status', blank=True, verbose_name=_('Статус'))
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator', blank=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator', blank=True, verbose_name=_('Создатель'))
     executor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='executor', blank=True, verbose_name=_('Исполнитель'))
     labels = models.ManyToManyField(Labels, verbose_name=_('Метка'))
     
