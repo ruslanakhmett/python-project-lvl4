@@ -231,7 +231,7 @@ msgstr "Delete task"
 #: task_manager/web/templates/pages/statuses_delete.html:29
 #: task_manager/web/templates/pages/labels_delete.html:29
 msgid "Да, удалить"
-msgstr "Yes delete"
+msgstr "Yes, delete"
 
 #: task_manager/web/templates/pages/tasks_update.html:29
 msgid "Изменение задачи"
