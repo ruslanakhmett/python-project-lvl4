@@ -190,7 +190,7 @@ class CreateTaskTestCases(TestCase):
         response = self.client.post(self.task_url, {
             'name': 'task1',
             'text': 'description1',
-            'perfomer': 'sergio',
+            'executor': 'sergio',
             'status': 'status1',
             'labels':['label1'],
         })
@@ -199,5 +199,5 @@ class CreateTaskTestCases(TestCase):
         self.assertEquals(Tasks.objects.get(id=1).name, 'task1')
         self.assertEquals(Tasks.objects.get(id=1).description, 'description1')
         self.assertEquals(Tasks.objects.get(id=1).creator_id, 1)
-        self.assertEquals(Tasks.objects.get(id=1).perfomer_id, 1)
+        self.assertEquals(Tasks.objects.get(id=1).executor_id, 1)
         self.assertEquals(Tasks.objects.get(id=1).status_id, 1)
