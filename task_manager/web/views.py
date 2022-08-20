@@ -128,7 +128,7 @@ class UpdateUserView(View):
             messages.add_message(
                 request, 
                 messages.SUCCESS,
-                _("Пользователь успешно изменен")
+                _("Пользователь успешно изменён")
             )
             return redirect("users")
         return render(request, self.template_name, context={"form": form})

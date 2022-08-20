@@ -109,7 +109,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 
 ROLLBAR = {
-     'access_token': 'f927429b9e4d4bc5bffc0a6780950d74',
+     'access_token': os.environ.get("access_token"),
      'environment': 'development' if DEBUG else 'production',
      'root': BASE_DIR,
  }

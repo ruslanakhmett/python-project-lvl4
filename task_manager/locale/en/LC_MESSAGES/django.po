@@ -280,7 +280,7 @@ msgid "У вас нет прав для изменения другого пол
 msgstr "You do not have rights to change another user."
 
 #: task_manager/web/views.py:130
-msgid "Пользователь успешно изменен"
+msgid "Пользователь успешно изменён"
 msgstr "User edited successfully"
 
 #: task_manager/web/views.py:167
