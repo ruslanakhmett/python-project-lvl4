@@ -166,6 +166,10 @@ msgstr "Delete"
 msgid "Создать"
 msgstr "Create"
 
+#: task_manager/web/templates/pages/tasks.html:37
+msgid "Создать задачу"
+msgstr "Create task"
+
 #: task_manager/web/templates/pages/labels_delete.html:25
 msgid "Удаление метки"
 msgstr "Delete label"
