@@ -290,16 +290,18 @@ class TasksListView(ListView):
     model = Tasks
     
     def get_context_data(self, **kwargs):
+        if self.request.user.is_authenticated:
+            context = super().get_context_data(**kwargs)
 
-        context = super().get_context_data(**kwargs)
+            if self.request.GET.get('self_tasks'):
+                queryset = self.get_queryset().filter(creator_id=self.request.user.pk)
+            else:
+                queryset = self.get_queryset()
 
-        if self.request.GET.get('self_tasks') == 'on':
-            queryset = self.get_queryset().filter(creator_id=self.request.user.pk)
+            context['filter'] = TasksFilter(self.request.GET, queryset=queryset)
+            return context
         else:
-            queryset = self.get_queryset()
-
-        context['filter'] = TasksFilter(self.request.GET, queryset=queryset)
-        return context
+            redirect('login')
 
 
 class TasksCreateView(View):

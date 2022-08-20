@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import rollbar
 from dotenv import find_dotenv, load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -107,7 +108,13 @@ LOCALE_PATHS = ( os.path.join(BASE_DIR, 'task_manager/locale'), )
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 
+ROLLBAR = {
+     'access_token': 'f927429b9e4d4bc5bffc0a6780950d74',
+     'environment': 'development' if DEBUG else 'production',
+     'root': BASE_DIR,
+ }
 
+rollbar.init(**ROLLBAR)
 
 try:
     from .local_settings import *

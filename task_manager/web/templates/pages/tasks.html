@@ -29,55 +29,26 @@
     {% endfor %}
 {% endif %}
 
-<h1>{% trans "Задачи" %}</h1>
-<br>
+
 
 <main class="px-3">
+<h1>{% trans "Задачи" %}</h1>
+<br>
   <a href="{% url 'tasks_create' %}" class="btn btn-secondary border-white bg-white">{% trans "Создать" %}</a>
 </main>
 
 <form method="get">
   {{ filter.form|bootstrap }}
-    {% comment %} <div class="col-md">
-      <div class="col-auto my-3"> {% endcomment %}
-        
-        <!--<label class="mr-sm-2" for="inlineFormCustomSelect">Статус</label>
-        <select class="form-select" id="inlineFormCustomSelect">
-          <option selected>----------</option>
-          {% for status in statuses %}
-          <option value="{{ status.name }}">{{ status.name }}</option>
-          {% endfor %}
-        </select>
-
-        <label class="mr-sm-1" for="inlineFormCustomSelect">Исполнитель</label>
-        <select class="form-select" id="inlineFormCustomSelect">
-          <option selected>----------</option>
-          {% for user in users %}
-          <option value="{{ user.username}}">{{ user.username }}</option>
-          {% endfor %}
-        </select>
-
-        <label class="mr-sm-2" for="inlineFormCustomSelect">Метка</label>
-        <select class="form-select" id="inlineFormCustomSelect">
-          <option selected>----------</option>
-          {% for label in labels %}
-          <option value="{{ label.name}}">{{ label.name }}</option>
-          {% endfor %}
-        </select>
-      </div>-->
-
       <div class="col-auto my-1">
         <div class="custom-control custom-checkbox mr-sm-2">
           <input type="checkbox" class="form-check-input is-valid" name="self_tasks" id="customControlAutosizing">
           <label class="custom-control-label" for="customControlAutosizing">{% trans "Только свои задачи" %}</label>
         </div>
       </div>
-
       <div class="col-auto my-1">
         <button type="submit" class="btn btn-secondary border-white bg-white">{% trans "Показать" %}</button>
       </div>
     </form>
-
 
 <table class="table table-striped table-dark">
     <thead>
@@ -107,7 +78,6 @@
         </td>
       </tr>
       {% endfor %}
-
     </tbody>
   </table>
 

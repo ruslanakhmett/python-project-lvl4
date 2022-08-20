@@ -27,7 +27,6 @@
 <link rel="icon" href="{% static '/favicons/favicon.ico' %}">
 <meta name="theme-color" content="#712cf9">
 
-
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -81,18 +80,15 @@
       }
     </style>
 
-    
     <!-- Custom styles for this template -->
     <link href="{% static '/css/cover.css' %}" rel="stylesheet">
   </head>
 
   {% block content %}{% endblock %}
 
-
-
   
-  <footer class="mastfoot mt-auto">
-    <div class="inner">
+  <footer>
+    <div class="container my-3 pt-4 border-top">
       <p> {% trans "Разработано для Hexlet Python Dev Course by RuslanAkhmetshin" %}</p>
     </div>
   </footer>
