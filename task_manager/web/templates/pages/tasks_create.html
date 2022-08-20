@@ -41,22 +41,22 @@
   </div>
   
   <div class="mb-3">
-    <label for="exampleFormControlTextarea1" class="form-label">{% trans "Описание" %}</label>
-    <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3" placeholder={% trans "Описание" %}></textarea>
+    <label for="id_description" class="form-label">{% trans "Описание" %}</label>
+    <textarea class="form-control" name="text" id="id_description" rows="3" placeholder={% trans "Описание" %}></textarea>
   </div>
 
     <div class="col-md">
       <div class="col-auto my-3">
-        <label class="mr-sm-2" for="inlineFormCustomSelect">{% trans "Статус" %}</label>
-        <select name="status" class="form-select" id="inlineFormCustomSelect">
+        <label class="mr-sm-2" type="text" for="id_status">{% trans "Статус" %}</label>
+        <select name="status" class="form-select" id="id_status">
           <option selected>----------</option>
           {% for status in statuses %}
           <option value="{{ status.name }}">{{ status.name }}</option>
           {% endfor %}
         </select>
         <br>
-        <label class="mr-sm-1" for="inlineFormCustomSelect">{% trans "Исполнитель" %}</label>
-        <select name="perfomer" class="form-select" id="inlineFormCustomSelect">
+        <label class="mr-sm-1" type="text" for="id_executor">{% trans "Исполнитель" %}</label>
+        <select name="perfomer" class="form-select" id="id_executor">
           <option selected>----------</option>
           {% for user in users %}
           <option value="{{ user.username}}">{{ user.username }}</option>
@@ -64,7 +64,7 @@
         </select>
         <br>
         <div class="form-group"><label for="id_labels">{% trans "Метки" %}</label>
-            <select name="labels" class="form-control" title="" id="id_labels" multiple>
+            <select name="labels" type="text" class="form-control" id="id_labels" multiple>
               {% for label in labels %}
               <option value="{{ label.name }}">{{ label.name }}</option>
               {% endfor %}
