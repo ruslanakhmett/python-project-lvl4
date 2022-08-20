@@ -55,9 +55,14 @@
           {% endfor %}
         </select>
         <br>
-        <label class="mr-sm-1" type="text" for="id_executor">{% trans "Исполнитель" %}</label>
+        
+        <div class="form-group"><label for="id_executor">{% trans "Исполнитель" %}</label>
+        <select name="executor" class="form-control" title="" id="id_executor">
+          <option value="" selected>---------</option>
+        {% comment %} <label class="mr-sm-1" type="text" for="id_executor">{% trans "Исполнитель" %}</label>
         <select name="perfomer" class="form-select" id="id_executor">
-          <option selected>----------</option>
+          <option selected>----------</option> {% endcomment %}
+
           {% for user in users %}
           <option value="{{ user.username}}">{{ user.username }}</option>
           {% endfor %}
