@@ -5,6 +5,11 @@ from django.utils.translation import gettext_lazy as _
 
 
 class UserLoginForm(forms.Form):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+    
     username = forms.CharField(
         label=_("Имя пользователя"),
         widget=forms.TextInput(attrs={"class": "form-control"}),
@@ -15,6 +20,11 @@ class UserLoginForm(forms.Form):
 
 
 class SignUpForm(UserCreationForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
     first_name = forms.CharField(label=_("Имя"), widget=forms.TextInput())
     last_name = forms.CharField(label=_("Фамилия"), widget=forms.TextInput())
 
@@ -28,8 +38,18 @@ class SignUpForm(UserCreationForm):
 
 
 class StatusCreateForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
     name = forms.CharField(label=_("Имя"), widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': _('Имя')}))
 
 
 class LabelCreateForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
     name = forms.CharField(label=_("Имя"), widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': _('Имя')}))
