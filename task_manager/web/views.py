@@ -345,7 +345,6 @@ class TasksCreateView(View):
             return redirect("tasks")
 
 
-
 class TasksUpdateView(View):
     template_name = "pages/tasks_update.html"
 
