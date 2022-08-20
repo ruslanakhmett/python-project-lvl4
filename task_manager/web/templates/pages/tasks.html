@@ -70,7 +70,7 @@
         </td>
         <td>{{ task.status.name }}</td>
         <td>{{ task.creator.username }}</td>
-        <td>{{ task.perfomer.username }}</td>
+        <td>{{ task.executor.username }}</td>
         <td>{{ task.created_at|date:'Y-m-d H:i'}}</td>
         <td>
           <a class="nav-link" href="{{ task.pk }}/update/">{% trans "Изменить" %}</a>

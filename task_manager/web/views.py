@@ -160,7 +160,7 @@ class DeleteUserView(View):
 
     def post(self, request, **kwargs):
 
-        task = Tasks.objects.filter(perfomer_id=request.user.id)
+        task = Tasks.objects.filter(executor_id=request.user.id)
         if task.exists():
             messages.add_message(
                 request,
@@ -317,7 +317,7 @@ class TasksCreateView(View):
         if request.user.is_authenticated:
             get_name = request.POST.get('name')
             get_text = request.POST.get('text')
-            get_perfomer_id = User.objects.get(username=request.POST.get('executor')).id
+            get_executor_id = User.objects.get(username=request.POST.get('executor')).id
             get_status_id = Statuses.objects.get(name=request.POST.get('status')).id
             get_labels_list = request.POST.getlist('labels')
             
@@ -328,7 +328,7 @@ class TasksCreateView(View):
             instance = Tasks.objects.create(
                 name=get_name,
                 description=get_text,
-                perfomer_id=get_perfomer_id,
+                executor_id=get_executor_id,
                 status_id=get_status_id,
                 creator_id=request.user.pk,
 
@@ -362,7 +362,7 @@ class TasksUpdateView(View):
         if request.user.is_authenticated:
             get_name = request.POST.get('name')
             get_text = request.POST.get('text')
-            get_perfomer_id = User.objects.get(username=request.POST.get('executor')).id
+            get_executor_id = User.objects.get(username=request.POST.get('executor')).id
             get_status_id = Statuses.objects.get(name=request.POST.get('status')).id
             get_labels_list = request.POST.getlist('labels')
             
@@ -374,7 +374,7 @@ class TasksUpdateView(View):
                 Tasks.objects.filter(id=kwargs["pk"]).update(
                     name=get_name,
                     description=get_text,
-                    perfomer_id=get_perfomer_id,
+                    executor_id=get_executor_id,
                     status_id=get_status_id,
                     )
                 

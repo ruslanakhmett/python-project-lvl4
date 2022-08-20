@@ -57,10 +57,10 @@
         <br>
 
         <label class="mr-sm-1" for="inlineFormCustomSelect">{% trans "Исполнитель" %}</label>
-        <select name="perfomer" class="form-select" id="inlineFormCustomSelect">
-          <option selected>{{ task.perfomer.username }}</option>
+        <select name="executor" class="form-select" id="inlineFormCustomSelect">
+          <option selected>{{ task.executor.username }}</option>
           {% for user in users %}
-            {% if user.username != task.perfomer.username %}
+            {% if user.username != task.executor.username %}
               <option value="{{ user.username }}">{{ user.username }}</option>
             {% endif %}
           {% endfor %}

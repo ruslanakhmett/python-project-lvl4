@@ -6,7 +6,7 @@ from .models import Statuses, Tasks, Labels
 
 class TasksFilter(django_filters.FilterSet):
     labels = django_filters.ModelChoiceFilter(queryset=Labels.objects.all())
-    perfomer = django_filters.ModelChoiceFilter(queryset=User.objects.all().exclude(is_superuser=True))
+    executor = django_filters.ModelChoiceFilter(queryset=User.objects.all().exclude(is_superuser=True))
     class Meta:
         model = Tasks
-        fields = ('status', 'perfomer', 'labels')
+        fields = ('status', 'executor', 'labels')
