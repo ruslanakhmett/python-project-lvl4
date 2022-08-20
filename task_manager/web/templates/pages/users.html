@@ -6,7 +6,6 @@
 
 {% block content %}
 
-
 {% if request.user.is_authenticated %}
     {% include 'navbar_in.html' %}
 {% else %}
@@ -15,9 +14,6 @@
 
 {% block navbar %}
 {% endblock %}
-<br>
-<br>
-<br>
 {% if messages %}
     {% for message in messages %}
         {% if message.tags == 'success' %} 
@@ -27,6 +23,10 @@
         {% endif %}
     {% endfor %}
 {% endif %}
+
+
+
+
 
 <h1>{% trans "Пользователи" %}</h1>
 <br>
