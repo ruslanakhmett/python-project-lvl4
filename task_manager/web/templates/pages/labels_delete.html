@@ -24,10 +24,10 @@
 <div class="container wrapper flex-grow-1">
 <h1 class="my-4">{% trans "Удаление метки" %}</h1>
 <p>{% trans "Вы уверены, что хотите удалить" %} {{ label.name }}?</p>
-<form method="post">
-{% csrf_token %}
-<input class="btn btn-danger" type="submit" value="Да, удалить">
-</form>
+    <form method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">{% trans "Да, удалить" %}</button>
+    </form>
 </div>
 
 {% endblock %}
