@@ -339,7 +339,7 @@ class TasksCreateView(View):
             messages.add_message(
                     request,
                     messages.SUCCESS,
-                    _("Задача успешно создана."),
+                    _("Задача успешно создана"),
                     fail_silently=True,
                 )
             return redirect("tasks")

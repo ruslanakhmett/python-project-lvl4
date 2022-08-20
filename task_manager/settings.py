@@ -64,12 +64,12 @@ WSGI_APPLICATION = 'task_manager.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get("ENGINE"),
-        'NAME': os.environ.get("NAME"),
-        'USER': os.environ.get("USER"),
-        'PASSWORD': os.environ.get("PASSWORD"),
-        'HOST': os.environ.get("HOST"),
-        'PORT':  os.environ.get("PORT")
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd6pv41br7g2bqk',
+        'USER': 'ofvhmxqaaqcwts',
+        'PASSWORD': '2164e9ba65909b77982b7ff63a6dd563f9b3faca86e45e1b7e96067f3be6da76',
+        'HOST': 'ec2-54-229-217-195.eu-west-1.compute.amazonaws.com',
+        'PORT':  5432
     }
 }
 

@@ -306,8 +306,8 @@ msgid "Статус успешно удалён"
 msgstr "Status deleted successfully"
 
 #: task_manager/web/views.py:338
-msgid "Задача успешно создана."
-msgstr "The task has been successfully created."
+msgid "Задача успешно создана"
+msgstr "The task has been successfully created"
 
 #: task_manager/web/views.py:384
 msgid "Задача успешно изменена"
@@ -315,7 +315,7 @@ msgstr "Task updated successfully"
 
 #: task_manager/web/views.py:423
 msgid "Задачу может удалить только её автор"
-msgstr "A task can only be deleted by its author."
+msgstr "A task can only be deleted by its author"
 
 #: task_manager/web/views.py:436
 msgid "Задача успешно удалена"
