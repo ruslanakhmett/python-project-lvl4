@@ -298,11 +298,11 @@ msgid "Статус успешно создан"
 msgstr "Status created successfully"
 
 #: task_manager/web/views.py:246
-msgid "Статус успешно обновлен"
+msgid "Статус успешно изменён"
 msgstr "Status updated successfully"
 
 #: task_manager/web/views.py:274
-msgid "Статус успешно удален"
+msgid "Статус успешно удалён"
 msgstr "Status deleted successfully"
 
 #: task_manager/web/views.py:338

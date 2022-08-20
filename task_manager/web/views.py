@@ -244,7 +244,7 @@ class StatusesUpdateView(View):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _("Статус успешно обновлен"),
+                _("Статус успешно изменён"),
                 fail_silently=True,
             )
 
@@ -272,7 +272,7 @@ class StatusesDeleteView(View):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _("Статус успешно удален"),
+                _("Статус успешно удалён"),
                 fail_silently=True,
             )
         except Exception as error: 
