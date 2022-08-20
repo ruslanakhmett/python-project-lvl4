@@ -317,7 +317,7 @@ class TasksCreateView(View):
         if request.user.is_authenticated:
             get_name = request.POST.get('name')
             get_text = request.POST.get('text')
-            get_perfomer_id = User.objects.get(username=request.POST.get('perfomer')).id
+            get_perfomer_id = User.objects.get(username=request.POST.get('executor')).id
             get_status_id = Statuses.objects.get(name=request.POST.get('status')).id
             get_labels_list = request.POST.getlist('labels')
             
@@ -362,7 +362,7 @@ class TasksUpdateView(View):
         if request.user.is_authenticated:
             get_name = request.POST.get('name')
             get_text = request.POST.get('text')
-            get_perfomer_id = User.objects.get(username=request.POST.get('perfomer')).id
+            get_perfomer_id = User.objects.get(username=request.POST.get('executor')).id
             get_status_id = Statuses.objects.get(name=request.POST.get('status')).id
             get_labels_list = request.POST.getlist('labels')
             
