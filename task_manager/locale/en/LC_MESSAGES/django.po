@@ -140,7 +140,7 @@ msgid "Дата создания"
 msgstr "Created at"
 
 #: task_manager/web/templates/pages/labels.html:55
-#: task_manager/web/templates/pages/labels_update.html:44
+#: task_manager/web/templates/pages/labels_update.html:42
 #: task_manager/web/templates/pages/statuses.html:55
 #: task_manager/web/templates/pages/statuses_update.html:44
 #: task_manager/web/templates/pages/task_show.html:53
@@ -326,7 +326,7 @@ msgid "Метка успешно создана"
 msgstr "Label created successfully"
 
 #: task_manager/web/views.py:512
-msgid "Метка успешно обновлена"
+msgid "Метка успешно изменена"
 msgstr "Label created successfully"
 
 #: task_manager/web/views.py:543

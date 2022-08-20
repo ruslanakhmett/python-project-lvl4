@@ -290,18 +290,17 @@ class TasksListView(ListView):
     model = Tasks
     
     def get_context_data(self, **kwargs):
-        if self.request.user.is_authenticated:
-            context = super().get_context_data(**kwargs)
 
-            if self.request.GET.get('self_tasks'):
-                queryset = self.get_queryset().filter(creator_id=self.request.user.pk)
-            else:
-                queryset = self.get_queryset()
+        context = super().get_context_data(**kwargs)
 
-            context['filter'] = TasksFilter(self.request.GET, queryset=queryset)
-            return context
+        if self.request.GET.get('self_tasks'):
+            queryset = self.get_queryset().filter(creator_id=self.request.user.pk)
         else:
-            redirect('login')
+            queryset = self.get_queryset()
+
+        context['filter'] = TasksFilter(self.request.GET, queryset=queryset)
+        return context
+
 
 
 class TasksCreateView(View):
@@ -512,7 +511,7 @@ class LabelsUpdateView(View):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _("Метка успешно обновлена"),
+                _("Метка успешно изменена"),
                 fail_silently=True,
             )
 
