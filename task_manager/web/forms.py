@@ -1,3 +1,4 @@
+from curses import color_content
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -47,17 +48,28 @@ class StatusCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
 
-    name = forms.CharField(label=_("Имя"), widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': _('Имя')}))
+    name = forms.CharField(error_messages={'unique': 'Task status с таким Имя уже существует.'},
+                           label=_("Имя"),
+                           widget=forms.TextInput(attrs={"class": "form-control",
+                                                         'placeholder': _('Имя')}))
+    class Meta:
+        model = Statuses
+        fields = ("name",)
 
 
-
-class LabelCreateForm(forms.Form):
+class LabelCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
 
-    name = forms.CharField(label=_("Имя"), widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': _('Имя')}))
+    name = forms.CharField(error_messages={'unique': 'Label с таким Имя уже существует.'},
+                           label=_("Имя"),
+                           widget=forms.TextInput(attrs={"class": "form-control",
+                                                         'placeholder': _('Имя')}))
+    class Meta:
+        model = Labels
+        fields = ("name",)
 
 
 class TaskCreateForm(forms.ModelForm):
@@ -66,8 +78,14 @@ class TaskCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
 
-    name = forms.CharField(label=_("Имя"), widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': _('Имя')}))
-    description = forms.CharField(label=_("Описание"), widget=forms.Textarea(attrs={"class": "form-control", 'rows': 4, 'placeholder': _('Описание')}))
+    name = forms.CharField(error_messages={'unique': 'Task с таким Имя уже существует.'},
+                           label=_("Имя"), 
+                           widget=forms.TextInput(attrs={"class": "form-control", 
+                                                         'placeholder': _('Имя')}))
+    description = forms.CharField(label=_("Описание"),
+                                  widget=forms.Textarea(attrs={"class": "form-control", 
+                                                               'rows': 4, 
+                                                               'placeholder': _('Описание')}))
     status = forms.ModelChoiceField(
         label=_("Статус"),
         queryset=Statuses.objects.all(),

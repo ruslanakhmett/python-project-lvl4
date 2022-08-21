@@ -108,6 +108,8 @@ LOCALE_PATHS = ( os.path.join(BASE_DIR, 'task_manager/locale'), )
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 
+LOGIN_URL = 'login'
+
 ROLLBAR = {
      'access_token': os.environ.get("access_token"),
      'environment': 'development' if DEBUG else 'production',

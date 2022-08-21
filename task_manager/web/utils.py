@@ -1,16 +1,18 @@
 from django.contrib import messages
-from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-def is_auth(template_name, request, context):
-    if request.user.is_authenticated:
-        return render(request, template_name, context=context)
-    else:
-        messages.add_message(
-            request,
-            messages.ERROR,
-            _("Вы не авторизованы! Пожалуйста, выполните вход."),
-            fail_silently=True,
+class CustomLoginRequiredMixin(LoginRequiredMixin):
+
+    permission_denied_message = _("Вы не авторизованы! Пожалуйста, выполните вход.")
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.add_message(request, messages.WARNING,
+                             self.permission_denied_message)
+            return self.handle_no_permission()
+        
+        return super(CustomLoginRequiredMixin, self).dispatch(
+            request, *args, **kwargs
         )
-        return redirect("login")

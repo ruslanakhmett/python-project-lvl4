@@ -30,10 +30,17 @@
 
 <h1>{% trans "Создать задачу" %}</h1>
 <br>
-
+<br>
+<br>
 <form class="form-inline center" method="post">
     {% csrf_token %}
-    
+    {% for field in form.fields %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <p style="color: red;"> {{ error }} <p>
+                         {% endfor %}
+                    {% endif %}
+        {% endfor %}
     {{ form.as_p }}
   {% comment %} <div class="mb-2">
     <label for="exampleFormControlInput1" class="form-label">{% trans "Имя" %}</label>

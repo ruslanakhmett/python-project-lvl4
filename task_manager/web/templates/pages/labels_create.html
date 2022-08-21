@@ -28,12 +28,21 @@
     {% endfor %}
 {% endif %}
 
+
+
 <main class="px-3">
 <h1>{% trans "Создать метку" %}</h1>
 <br>
 
 <form method="post">
     {% csrf_token %}
+    {% for field in form.fields %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <p style="color: red;"> {{ error }} <p>
+                         {% endfor %}
+                    {% endif %}
+        {% endfor %}
     <div class="w-70 container">
       <div class="col align-self-center">
         {{ form.as_p }}

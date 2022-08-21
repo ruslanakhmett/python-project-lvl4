@@ -5,12 +5,11 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import CreateView, ListView
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.decorators import login_required
 
 from .forms import SignUpForm, UserLoginForm, StatusCreateForm, LabelCreateForm, TaskCreateForm
 from .models import Statuses, Tasks, Labels
 from .filters import TasksFilter
-from .utils import is_auth
+from .utils import CustomLoginRequiredMixin
 
 
 
@@ -91,34 +90,25 @@ class UsersShowView(View):
         )
 
 
-class UpdateUserView(View):
+class UpdateUserView(CustomLoginRequiredMixin, View):
     template_name = "pages/user_update.html"
-
+    
     def get(self, request, **kwargs):
+        form = SignUpForm(instance=request.user)
 
-        if request.user.is_authenticated:
-            form = SignUpForm(instance=request.user)
-
-            user_id_from_link = kwargs["pk"]
-            if request.user.pk == user_id_from_link:
-                return render(request,
-                              self.template_name,
-                              context={"form": form})
-            messages.add_message(
-                request,
-                messages.ERROR,
-                _("У вас нет прав для изменения другого пользователя."),
-                fail_silently=True,
-            )
-            return redirect("users")
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                _("Вы не авторизованы! Пожалуйста, выполните вход."),
-                fail_silently=True,
-            )
-            return redirect("login")
+        user_id_from_link = kwargs["pk"]
+        if request.user.pk == user_id_from_link:
+            return render(request,
+                            self.template_name,
+                            context={"form": form})
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("У вас нет прав для изменения другого пользователя."),
+            fail_silently=True,
+        )
+        return redirect("users")
+ 
 
     def post(self, request, **kwargs):
         form = SignUpForm(request.POST, instance=request.user)
@@ -134,29 +124,22 @@ class UpdateUserView(View):
         return render(request, self.template_name, context={"form": form})
 
 
-class DeleteUserView(View):
+class DeleteUserView(CustomLoginRequiredMixin, View):
     template_name = "pages/user_delete.html"
 
     def get(self, request, **kwargs):
-        if request.user.is_authenticated:
-            user_id_from_link = kwargs["pk"]
-            if request.user.id == user_id_from_link:
-                return render(request, self.template_name)
-            messages.add_message(
-                request,
-                messages.ERROR,
-                _("У вас нет прав для изменения другого пользователя."),
-                fail_silently=True,
-            )
-            return redirect("users")
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                _("Вы не авторизованы! Пожалуйста, выполните вход."),
-                fail_silently=True,
-            )
-            return redirect("login")
+
+        user_id_from_link = kwargs["pk"]
+        if request.user.id == user_id_from_link:
+            return render(request, self.template_name)
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("У вас нет прав для изменения другого пользователя."),
+            fail_silently=True,
+        )
+        return redirect("users")
+
 
     def post(self, request, **kwargs):
 
@@ -189,53 +172,46 @@ class DeleteUserView(View):
             return redirect('users')
 
 
-class StatusesShowView(View):
+class StatusesShowView(CustomLoginRequiredMixin, View):
     template_name = "pages/statuses.html"
 
     def get(self, request):
         context = {"statuses": Statuses.objects.all()}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
 
-class StatusesCreateView(View):
+class StatusesCreateView(CustomLoginRequiredMixin, View):
     template_name = "pages/statuses_create.html"
 
     def get(self, request):
         context = {"form": StatusCreateForm()}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
     def post(self, request):
         form = StatusCreateForm(request.POST or None)
 
-        try:
-            if form.is_valid():
-                status = Statuses.objects.create(**form.cleaned_data)
-                status.save()
-                messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    _("Статус успешно создан"),
-                    fail_silently=True,
-                )
-                return redirect ('statuses')
-        except Exception as error: 
+
+        if form.is_valid():
+            Statuses.objects.create(**form.cleaned_data)
+
             messages.add_message(
                 request,
-                messages.ERROR,
-                error.message,
+                messages.SUCCESS,
+                _("Статус успешно создан"),
                 fail_silently=True,
             )
-        return redirect('statuses')
+            return redirect ('statuses')
+        else:
+            return render(request, self.template_name, {'form': form})
 
 
 class StatusesUpdateView(View):
     template_name = "pages/statuses_update.html"
 
-
     def get(self, request, **kwargs):
         context = {"form": StatusCreateForm(), 
                    "status": Statuses.objects.get(id=kwargs["pk"])}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
 
     def post(self, request, **kwargs):
@@ -259,23 +235,33 @@ class StatusesUpdateView(View):
         return redirect('statuses')
 
 
-class StatusesDeleteView(View):
+class StatusesDeleteView(CustomLoginRequiredMixin, View):
     template_name = "pages/statuses_delete.html"
 
     def get(self, request, **kwargs):
         context = {"status": Statuses.objects.get(id=kwargs["pk"])}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
     def post(self, request, **kwargs):
         try:
             status = Statuses.objects.get(id=kwargs["pk"])
-            status.delete()
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                _("Статус успешно удалён"),
-                fail_silently=True,
-            )
+
+            if not Tasks.objects.filter(status_id=kwargs["pk"]):
+                status.delete()
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    _("Статус успешно удалён"),
+                    fail_silently=True,
+                )
+            else:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    _("Невозможно удалить статус, потому что он используется"),
+                    fail_silently=True)
+                redirect('labels')
+        
         except Exception as error: 
             messages.add_message(
                 request,
@@ -286,10 +272,10 @@ class StatusesDeleteView(View):
         return redirect('statuses')
 
 
-class TasksListView(ListView):
+class TasksListView(CustomLoginRequiredMixin, ListView):
     template_name = "pages/tasks.html"
     model = Tasks
-    
+
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
@@ -304,26 +290,27 @@ class TasksListView(ListView):
 
 
 
-class TasksCreateView(View):
+class TasksCreateView(CustomLoginRequiredMixin, View):
     template_name = "pages/tasks_create.html"
-    
+
     def get(self, request, **kwargs):
         form = TaskCreateForm()
+        
         context = {"users": User.objects.all().exclude(username="admin"),
                    "labels": Labels.objects.all(),
                    "form": form}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
     def post(self, request, **kwargs):
+        form = TaskCreateForm(request.POST or None)
 
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and form.is_valid():
             get_name = request.POST.get('name')
             get_text = request.POST.get('description')
             get_status_id = request.POST.get('status')
             
-            
-
-            if request.POST.get('executor'):
+            print(request.POST.get('executor'))
+            if request.POST.get('executor').isalpha():  # if got executor name or "-------"
                 get_executor_id = User.objects.get(username=request.POST.get('executor')).id
             else:
                 get_executor_id = None
@@ -354,10 +341,13 @@ class TasksCreateView(View):
                     _("Задача успешно создана"),
                     fail_silently=True,
                 )
-            return redirect("tasks")
+            return redirect('tasks')
+        else:
+            print(form.errors)
+            return render(request, self.template_name, {'form': form})
 
 
-class TasksUpdateView(View):
+class TasksUpdateView(CustomLoginRequiredMixin, View):
     template_name = "pages/tasks_update.html"
 
     def get(self, request, **kwargs):
@@ -367,70 +357,59 @@ class TasksUpdateView(View):
                    "statuses": Statuses.objects.all(),
                    "all_labels": Labels.objects.all(),
                    "used_labels": Tasks.objects.get(id=kwargs["pk"]).labels.all()}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
 
     def post(self, request, **kwargs):
 
-        if request.user.is_authenticated:
-            get_name = request.POST.get('name')
-            get_text = request.POST.get('text')
-            get_status_id = Statuses.objects.get(name=request.POST.get('status')).id
+        get_name = request.POST.get('name')
+        get_text = request.POST.get('text')
+        get_status_id = Statuses.objects.get(name=request.POST.get('status')).id
 
-            if request.POST.get('executor'):
-                get_executor_id = User.objects.get(username=request.POST.get('executor')).id
-            else:
-                get_executor_id = None
-                
-            if request.POST.getlist('labels'):
-                get_labels_list = request.POST.getlist('labels')
-            else:
-                get_labels_list = None
+        if request.POST.get('executor').isalpha():
+            get_executor_id = User.objects.get(username=request.POST.get('executor')).id
+        else:
+            get_executor_id = None
+            
+        if request.POST.getlist('labels'):
+            get_labels_list = request.POST.getlist('labels')
+        else:
+            get_labels_list = None
 
-            try:
-                Tasks.objects.filter(id=kwargs["pk"]).update(
-                    name=get_name,
-                    description=get_text,
-                    executor_id=get_executor_id,
-                    status_id=get_status_id,
-                    )
-                
-                if get_labels_list:
-                    labels_id_list = []
-                    for name in get_labels_list:
-                        labels_id_list.append(Labels.objects.get(name=name).id)
-                    instance = Tasks.objects.get(id=kwargs["pk"])
-                    instance.labels.set(labels_id_list)  # update m2m data from list
-
-                messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    _("Задача успешно изменена"),
-                    fail_silently=True,
+        try:
+            Tasks.objects.filter(id=kwargs["pk"]).update(
+                name=get_name,
+                description=get_text,
+                executor_id=get_executor_id,
+                status_id=get_status_id,
                 )
-                return redirect("tasks")
-                
+            
+            if get_labels_list:
+                labels_id_list = []
+                for name in get_labels_list:
+                    labels_id_list.append(Labels.objects.get(name=name).id)
+                instance = Tasks.objects.get(id=kwargs["pk"])
+                instance.labels.set(labels_id_list)  # update m2m data from list
 
-            except Exception as error: 
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    error,
-                    fail_silently=True,
-                )
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                _("Задача успешно изменена"),
+                fail_silently=True,
+            )
             return redirect("tasks")
 
-        else:
+        except Exception as error: 
             messages.add_message(
                 request,
                 messages.ERROR,
-                _("Вы не авторизованы! Пожалуйста, выполните вход."),
+                error,
                 fail_silently=True,
             )
-            return redirect("login")
+        return redirect("tasks")
 
 
-class TasksDeleteView(View):
+class TasksDeleteView(CustomLoginRequiredMixin, View):
     template_name = "pages/tasks_delete.html"
 
     def get(self, request, **kwargs):
@@ -471,60 +450,54 @@ class TasksDeleteView(View):
             return redirect('tasks')
 
 
-class TaskDetailsShowView(View):
+class TaskDetailsShowView(CustomLoginRequiredMixin, View):
     template_name = "pages/task_show.html"
 
     def get(self, request, **kwargs):
         context = {"task": Tasks.objects.get(id=kwargs["pk"])}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
 
-class LabelsView(View):
+class LabelsView(CustomLoginRequiredMixin, View):
     template_name = "pages/labels.html"
 
     def get(self, request):
         context = {"labels": Labels.objects.all()}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
 
-class LabelsCreateView(View):
+class LabelsCreateView(CustomLoginRequiredMixin, View):
     template_name = "pages/labels_create.html"
 
     def get(self, request, **kwargs):
         context = {"form": LabelCreateForm()}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
     def post(self, request, **kwargs):
         form = LabelCreateForm(request.POST or None)
-        
-        try:
-            if form.is_valid():
-                Labels.objects.create(**form.cleaned_data)
 
-                messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    _("Метка успешно создана"),
-                    fail_silently=True,
-                )
-                return redirect ('labels')
-        except Exception as error: 
+        if form.is_valid():
+            Labels.objects.create(**form.cleaned_data)
+
             messages.add_message(
                 request,
-                messages.ERROR,
-                error.message,
+                messages.SUCCESS,
+                _("Метка успешно создана"),
                 fail_silently=True,
             )
-        return redirect('labels')
+            return redirect ('labels')
+        else:
+            return render(request, self.template_name, {'form': form})
+
     
     
-class LabelsUpdateView(View):
+class LabelsUpdateView(CustomLoginRequiredMixin, View):
     template_name = "pages/labels_update.html"
 
     def get(self, request, **kwargs):
         context = {"form": LabelCreateForm(), 
                    "label": Labels.objects.get(id=kwargs["pk"])}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
     def post(self, request, **kwargs):
 
@@ -547,12 +520,12 @@ class LabelsUpdateView(View):
         return redirect('labels')
 
 
-class LabelsDeleteView(View):
+class LabelsDeleteView(CustomLoginRequiredMixin, View):
     template_name = "pages/labels_delete.html"
 
     def get(self, request, **kwargs):
         context = {"label": Labels.objects.get(id=kwargs["pk"])}
-        return is_auth(self.template_name, request, context)
+        return render(request, self.template_name, context)
 
     def post(self, request, **kwargs):
 
