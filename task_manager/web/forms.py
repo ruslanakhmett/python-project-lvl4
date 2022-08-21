@@ -2,6 +2,10 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+
+from .models import Statuses, Tasks, Labels
+
 
 
 class UserLoginForm(forms.Form):
@@ -37,13 +41,14 @@ class SignUpForm(UserCreationForm):
                   "password2")
 
 
-class StatusCreateForm(forms.Form):
+class StatusCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
 
     name = forms.CharField(label=_("Имя"), widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': _('Имя')}))
+
 
 
 class LabelCreateForm(forms.Form):
@@ -53,3 +58,25 @@ class LabelCreateForm(forms.Form):
         self.label_suffix = ""
 
     name = forms.CharField(label=_("Имя"), widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': _('Имя')}))
+
+
+class TaskCreateForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    name = forms.CharField(label=_("Имя"), widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': _('Имя')}))
+    description = forms.CharField(label=_("Описание"), widget=forms.Textarea(attrs={"class": "form-control", 'rows': 4, 'placeholder': _('Описание')}))
+    status = forms.ModelChoiceField(
+        label=_("Статус"),
+        queryset=Statuses.objects.all(),
+        required=True,  
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    class Meta:
+        model = Tasks
+        fields = ("name",
+                  "description",
+                  "status")

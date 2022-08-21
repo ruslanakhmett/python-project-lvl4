@@ -7,7 +7,7 @@ from django.views.generic import CreateView, ListView
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
 
-from .forms import SignUpForm, UserLoginForm, StatusCreateForm, LabelCreateForm
+from .forms import SignUpForm, UserLoginForm, StatusCreateForm, LabelCreateForm, TaskCreateForm
 from .models import Statuses, Tasks, Labels
 from .filters import TasksFilter
 from .utils import is_auth
@@ -209,7 +209,8 @@ class StatusesCreateView(View):
 
         try:
             if form.is_valid():
-                Statuses.objects.create(**form.cleaned_data)
+                status = Statuses.objects.create(**form.cleaned_data)
+                status.save()
                 messages.add_message(
                     request,
                     messages.SUCCESS,
@@ -307,23 +308,30 @@ class TasksCreateView(View):
     template_name = "pages/tasks_create.html"
     
     def get(self, request, **kwargs):
+        form = TaskCreateForm()
         context = {"users": User.objects.all().exclude(username="admin"),
-                   "statuses": Statuses.objects.all(),
-                   "labels": Labels.objects.all()}
+                   "labels": Labels.objects.all(),
+                   "form": form}
         return is_auth(self.template_name, request, context)
 
     def post(self, request, **kwargs):
 
         if request.user.is_authenticated:
             get_name = request.POST.get('name')
-            get_text = request.POST.get('text')
-            get_executor_id = User.objects.get(username=request.POST.get('executor')).id
-            get_status_id = Statuses.objects.get(name=request.POST.get('status')).id
-            get_labels_list = request.POST.getlist('labels')
+            get_text = request.POST.get('description')
+            get_status_id = request.POST.get('status')
             
-            labels_id_list = []
-            for name in get_labels_list:
-                labels_id_list.append(Labels.objects.get(name=name).id)
+            
+
+            if request.POST.get('executor'):
+                get_executor_id = User.objects.get(username=request.POST.get('executor')).id
+            else:
+                get_executor_id = None
+            
+            if request.POST.getlist('labels'):
+                get_labels_list = request.POST.getlist('labels')
+            else:
+                get_labels_list = None
             
             instance = Tasks.objects.create(
                 name=get_name,
@@ -333,7 +341,12 @@ class TasksCreateView(View):
                 creator_id=request.user.pk,
 
             )
-            instance.labels.add(*labels_id_list)  # add m2m data
+            if get_labels_list:
+                labels_id_list = []
+                for name in get_labels_list:
+                    labels_id_list.append(Labels.objects.get(name=name).id)
+                
+                instance.labels.add(*labels_id_list)  # add m2m data
 
             messages.add_message(
                     request,
@@ -362,13 +375,17 @@ class TasksUpdateView(View):
         if request.user.is_authenticated:
             get_name = request.POST.get('name')
             get_text = request.POST.get('text')
-            get_executor_id = User.objects.get(username=request.POST.get('executor')).id
             get_status_id = Statuses.objects.get(name=request.POST.get('status')).id
-            get_labels_list = request.POST.getlist('labels')
-            
-            labels_id_list = []
-            for name in get_labels_list:
-                labels_id_list.append(Labels.objects.get(name=name).id)
+
+            if request.POST.get('executor'):
+                get_executor_id = User.objects.get(username=request.POST.get('executor')).id
+            else:
+                get_executor_id = None
+                
+            if request.POST.getlist('labels'):
+                get_labels_list = request.POST.getlist('labels')
+            else:
+                get_labels_list = None
 
             try:
                 Tasks.objects.filter(id=kwargs["pk"]).update(
@@ -378,8 +395,12 @@ class TasksUpdateView(View):
                     status_id=get_status_id,
                     )
                 
-                instance = Tasks.objects.get(id=kwargs["pk"])
-                instance.labels.set(labels_id_list)  # update m2m data from list
+                if get_labels_list:
+                    labels_id_list = []
+                    for name in get_labels_list:
+                        labels_id_list.append(Labels.objects.get(name=name).id)
+                    instance = Tasks.objects.get(id=kwargs["pk"])
+                    instance.labels.set(labels_id_list)  # update m2m data from list
 
                 messages.add_message(
                     request,
@@ -479,6 +500,7 @@ class LabelsCreateView(View):
         try:
             if form.is_valid():
                 Labels.objects.create(**form.cleaned_data)
+
                 messages.add_message(
                     request,
                     messages.SUCCESS,
