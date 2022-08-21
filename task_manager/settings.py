@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = os.environ.get("DEBUG")
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'webserver']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'webserver', 'python-django-blog-lvl4.herokuapp.com']
 
 
 INSTALLED_APPS = [
