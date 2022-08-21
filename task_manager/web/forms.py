@@ -17,7 +17,8 @@ class UserLoginForm(forms.Form):
     
     username = forms.CharField(
         label=_("Имя пользователя"),
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        widget=forms.TextInput(attrs={"class": "form-control",
+                                      'autofocus': True}),
     )
     password = forms.CharField(
         label=_("Пароль"), widget=forms.PasswordInput(attrs={"class": "form-control"})  # noqa 501
@@ -30,8 +31,8 @@ class SignUpForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
 
-    first_name = forms.CharField(label=_("Имя"), widget=forms.TextInput())
-    last_name = forms.CharField(label=_("Фамилия"), widget=forms.TextInput())
+    # first_name = forms.CharField(label=_("Имя"), widget=forms.TextInput())
+    # last_name = forms.CharField(label=_("Фамилия"), widget=forms.TextInput())
 
     class Meta:
         model = User
@@ -51,7 +52,8 @@ class StatusCreateForm(forms.ModelForm):
     name = forms.CharField(error_messages={'unique': 'Task status с таким Имя уже существует.'},
                            label=_("Имя"),
                            widget=forms.TextInput(attrs={"class": "form-control",
-                                                         'placeholder': _('Имя')}))
+                                                         'placeholder': _('Имя'),
+                                                         'autofocus': True}))
     class Meta:
         model = Statuses
         fields = ("name",)
@@ -66,7 +68,8 @@ class LabelCreateForm(forms.ModelForm):
     name = forms.CharField(error_messages={'unique': 'Label с таким Имя уже существует.'},
                            label=_("Имя"),
                            widget=forms.TextInput(attrs={"class": "form-control",
-                                                         'placeholder': _('Имя')}))
+                                                         'placeholder': _('Имя'),
+                                                         'autofocus': True}))
     class Meta:
         model = Labels
         fields = ("name",)
@@ -81,7 +84,8 @@ class TaskCreateForm(forms.ModelForm):
     name = forms.CharField(error_messages={'unique': 'Task с таким Имя уже существует.'},
                            label=_("Имя"), 
                            widget=forms.TextInput(attrs={"class": "form-control", 
-                                                         'placeholder': _('Имя')}))
+                                                         'placeholder': _('Имя'),
+                                                         'autofocus': True}))
     description = forms.CharField(label=_("Описание"),
                                   widget=forms.Textarea(attrs={"class": "form-control", 
                                                                'rows': 4, 
