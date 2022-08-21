@@ -65,10 +65,10 @@ WSGI_APPLICATION = 'task_manager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd6pv41br7g2bqk',
-        'USER': 'ofvhmxqaaqcwts',
-        'PASSWORD': '2164e9ba65909b77982b7ff63a6dd563f9b3faca86e45e1b7e96067f3be6da76',
-        'HOST': 'ec2-54-229-217-195.eu-west-1.compute.amazonaws.com',
+        'NAME': 'd80ucovosajj8d',
+        'USER': 'ggranzppyskfnf',
+        'PASSWORD': 'a50d753d54fd66f1e6363e4e283711d39a1a1f221e09f7158140fc6680b8a569',
+        'HOST': 'ec2-52-208-164-5.eu-west-1.compute.amazonaws.com',
         'PORT':  5432
     }
 }
