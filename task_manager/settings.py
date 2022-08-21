@@ -10,7 +10,7 @@ load_dotenv(find_dotenv())
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = os.environ.get("DEBUG")
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'webserver', 'python-django-blog-lvl4.herokuapp.com']
 
@@ -61,17 +61,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd80ucovosajj8d',
-        'USER': 'ggranzppyskfnf',
-        'PASSWORD': 'a50d753d54fd66f1e6363e4e283711d39a1a1f221e09f7158140fc6680b8a569',
-        'HOST': 'ec2-52-208-164-5.eu-west-1.compute.amazonaws.com',
-        'PORT':  5432
+if os.environ.get('GITHUB_WORKFLOW'):
+    DATABASES = {
+        'default': {
+           'ENGINE': 'django.db.backends.postgresql',
+           'NAME': 'django_db_test',
+           'USER': 'django_user_test',
+           'PASSWORD': 'pass_test',
+           'HOST': '127.0.0.1',
+           'PORT': 5432,
+        }
     }
-}
+    DEBUG = True
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ.get("NAME"),
+            'USER': os.environ.get("USER"),
+            'PASSWORD': os.environ.get("PASSWORD"),
+            'HOST': os.environ.get("HOST"),
+            'PORT':  5432
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
