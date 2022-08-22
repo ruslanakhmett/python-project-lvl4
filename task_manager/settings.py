@@ -61,29 +61,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
-if os.environ.get('GITHUB_WORKFLOW'):
-    DATABASES = {
-        'default': {
-           'ENGINE': 'django.db.backends.postgresql',
-           'NAME': 'django_db_test',
-           'USER': 'django_user_test',
-           'PASSWORD': 'pass_test',
-           'HOST': '127.0.0.1',
-           'PORT': 5432,
-        }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd4htoo9e6cgoih',
+        'USER': 'd4htoo9e6cgoih',
+        'PASSWORD': '777999e9f2405fabd4bf013636c61594150b02cc9373cf343d268f9cbef7dc62',
+        'HOST': 'ec2-52-210-97-223.eu-west-1.compute.amazonaws.com',
+        'PORT':  5432
     }
-    DEBUG = True
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ.get("NAME"),
-            'USER': os.environ.get("USER"),
-            'PASSWORD': os.environ.get("PASSWORD"),
-            'HOST': os.environ.get("HOST"),
-            'PORT':  5432
-        }
-    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -123,7 +112,7 @@ MEDIA_URL = '/media/'
 LOGIN_URL = 'login'
 
 ROLLBAR = {
-     'access_token': os.environ.get("access_token"),
+     'access_token': 'f927429b9e4d4bc5bffc0a6780950d74',
      'environment': 'development' if DEBUG else 'production',
      'root': BASE_DIR,
  }
