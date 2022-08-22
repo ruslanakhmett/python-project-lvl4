@@ -109,6 +109,7 @@ MEDIA_URL = '/media/'
 LOGIN_URL = 'login'
 
 rollbar.init('533e492eab0747be8510f95cdf6cdf19')
+rollbar.report_message('Rollbar is configured correctly')
 
 try:
     from .local_settings import *
