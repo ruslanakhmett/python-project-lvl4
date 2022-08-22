@@ -1,9 +1,7 @@
-from curses import color_content
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ValidationError
 
 from .models import Statuses, Tasks, Labels
 
@@ -30,9 +28,6 @@ class SignUpForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
-
-    # first_name = forms.CharField(label=_("Имя"), widget=forms.TextInput())
-    # last_name = forms.CharField(label=_("Фамилия"), widget=forms.TextInput())
 
     class Meta:
         model = User

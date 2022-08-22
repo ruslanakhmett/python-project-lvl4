@@ -49,6 +49,9 @@
         <button type="submit" class="btn btn-secondary border-white bg-white">{% trans "Показать" %}</button>
       </div>
     </form>
+    <br>
+    <br>
+    <br>
 
 <table class="table table-striped table-dark">
     <thead>
@@ -61,6 +64,7 @@
         <th scope="col">{% trans "Дата создания" %}</th>
       </tr>
     </thead>
+
     {% for task in filter.qs %}
     <tbody>
       <tr>

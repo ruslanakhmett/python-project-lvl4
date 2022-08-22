@@ -309,7 +309,6 @@ class TasksCreateView(CustomLoginRequiredMixin, View):
             get_text = request.POST.get('description')
             get_status_id = request.POST.get('status')
             
-            print(request.POST.get('executor'))
             if request.POST.get('executor').isalpha():  # if got executor name or "-------"
                 get_executor_id = User.objects.get(username=request.POST.get('executor')).id
             else:
