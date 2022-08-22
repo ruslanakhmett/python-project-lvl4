@@ -18,6 +18,9 @@ charset-normalizer==2.1.0; python_version >= "3.7" and python_version < "4" and 
 colorama==0.4.5; python_version >= "3.7" and python_full_version < "3.0.0" and sys_platform == "win32" or sys_platform == "win32" and python_version >= "3.7" and python_full_version >= "3.5.0" \
     --hash=sha256:854bf444933e37f5824ae7bfc1e98d5bce2ebe4160d46b5edf346a89358e99da \
     --hash=sha256:e6c6b4334fc50988a639d9b98aa429a0b57da6e17b9a44f0451f930b6967b7a4
+dj-database-url==1.0.0 \
+    --hash=sha256:ccf3e8718f75ddd147a1e212fca88eecdaa721759ee48e38b485481c77bca3dc \
+    --hash=sha256:cd354a3b7a9136d78d64c17b2aec369e2ae5616fbca6bfbe435ef15bb372ce39
 django-bootstrap-form==3.4 \
     --hash=sha256:de3f7893e515352834d446c441c0cb861637f92cebbe59d8229469c6cd3dc640
 django-bootstrap4==22.2; python_version >= "3.7" \
