@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import rollbar
 from dotenv import find_dotenv, load_dotenv
+import dj_database_url
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -61,16 +62,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd4htoo9e6cgoih',
-        'USER': 'd4htoo9e6cgoih',
-        'PASSWORD': '777999e9f2405fabd4bf013636c61594150b02cc9373cf343d268f9cbef7dc62',
-        'HOST': 'ec2-52-210-97-223.eu-west-1.compute.amazonaws.com',
-        'PORT':  5432
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'd29i7mklsgbuuv',
+#         'USER': 'zouitjdfxxpyfj',
+#         'PASSWORD': '2305fa0f286faa28826dab34db7c593978246a5351b454d570d086dfd380b0f3',
+#         'HOST': 'ec2-54-77-40-202.eu-west-1.compute.amazonaws.com',
+#         'PORT':  5432
+#     }
+# }
+
+DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
