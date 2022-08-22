@@ -108,13 +108,7 @@ MEDIA_URL = '/media/'
 
 LOGIN_URL = 'login'
 
-ROLLBAR = {
-     'access_token': 'b5a1772c7c4b4524a5ca7ddfd537e807',
-     'environment': 'production',
-     'root': BASE_DIR,
- }
-
-rollbar.init(**ROLLBAR)
+rollbar.init('533e492eab0747be8510f95cdf6cdf19')
 
 try:
     from .local_settings import *
