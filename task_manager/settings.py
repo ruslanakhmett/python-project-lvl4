@@ -109,7 +109,7 @@ MEDIA_URL = '/media/'
 LOGIN_URL = 'login'
 
 ROLLBAR = {
-     'access_token': 'f927429b9e4d4bc5bffc0a6780950d74',
+     'access_token': 'b5a1772c7c4b4524a5ca7ddfd537e807',
      'environment': 'production',
      'root': BASE_DIR,
  }
