@@ -2,12 +2,11 @@ import os
 from pathlib import Path
 import rollbar
 from dotenv import find_dotenv, load_dotenv
-import dj_database_url
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(find_dotenv())
-
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
@@ -62,22 +61,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
-MAX_CONN_AGE = 600
-
-if "DATABASE_URL" in os.environ:
-    DATABASES["default"] = dj_database_url.config(
-        conn_max_age=MAX_CONN_AGE, ssl_require=True)
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'd4htoo9e6cgoih',
-#         'USER': 'd4htoo9e6cgoih',
-#         'PASSWORD': '777999e9f2405fabd4bf013636c61594150b02cc9373cf343d268f9cbef7dc62',
-#         'HOST': 'ec2-52-210-97-223.eu-west-1.compute.amazonaws.com',
-#         'PORT':  5432
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd4htoo9e6cgoih',
+        'USER': 'd4htoo9e6cgoih',
+        'PASSWORD': '777999e9f2405fabd4bf013636c61594150b02cc9373cf343d268f9cbef7dc62',
+        'HOST': 'ec2-52-210-97-223.eu-west-1.compute.amazonaws.com',
+        'PORT':  5432
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
