@@ -15,7 +15,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'webserver', 'python-django-lvl4.herokuapp.com']
 
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -61,17 +60,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'd29i7mklsgbuuv',
-#         'USER': 'zouitjdfxxpyfj',
-#         'PASSWORD': '2305fa0f286faa28826dab34db7c593978246a5351b454d570d086dfd380b0f3',
-#         'HOST': 'ec2-54-77-40-202.eu-west-1.compute.amazonaws.com',
-#         'PORT':  5432
-#     }
-# }
 
 
 DATABASES = {
@@ -122,7 +110,7 @@ LOGIN_URL = 'login'
 
 ROLLBAR = {
      'access_token': 'f927429b9e4d4bc5bffc0a6780950d74',
-     'environment': 'development' if DEBUG else 'production',
+     'environment': 'production',
      'root': BASE_DIR,
  }
 
