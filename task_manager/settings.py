@@ -11,7 +11,7 @@ load_dotenv(find_dotenv())
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'webserver', 'python-django-lvl4.herokuapp.com']
 
@@ -108,8 +108,7 @@ MEDIA_URL = '/media/'
 
 LOGIN_URL = 'login'
 
-rollbar.init('533e492eab0747be8510f95cdf6cdf19')
-rollbar.report_message('Rollbar is configured correctly')
+rollbar.init(os.environ.get("access_token"))
 
 try:
     from .local_settings import *
