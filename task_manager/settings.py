@@ -68,6 +68,10 @@ if os.environ.get('GITHUB_WORKFLOW'):
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    SECRET_KEY = 'test_key'
+    DEBUG = True
+
+
 else:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
