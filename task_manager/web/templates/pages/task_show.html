@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load bootstrap4 %}
-
 
 
 {% block content %}
@@ -40,19 +38,19 @@
     <hr>
     <div class="container">
       <div class="row p-1">
-        <div class="col">{% trans "Автор" %}:</div>
+        <div class="col">{% trans "Автор" %}</div>
         <div class="col">{{ task.creator.username }}</div>
       </div>
       <div class="row p-1">
-        <div class="col">{% trans "Исполнитель" %}:</div>
+        <div class="col">{% trans "Исполнитель" %}</div>
         <div class="col">{{ task.executor.username }}</div>
       </div>
       <div class="row p-1">
-        <div class="col">{% trans "Статус" %}:</div>
+        <div class="col">{% trans "Статус" %}</div>
         <div class="col">{{ task.status.name }}</div>
       </div>
       <div class="row p-1">
-        <div class="col">{% trans "Дата создания" %}:</div>
+        <div class="col">{% trans "Дата создания" %}</div>
         <div class="col">{{ task.created_at|date:'Y-m-d H:i'}}</div>
       </div>
       <div class="row p-1">
