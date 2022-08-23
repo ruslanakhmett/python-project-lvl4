@@ -39,7 +39,7 @@
     <div class="container">
       <div class="row p-1">
         <div class="col">{% trans "Автор" %}</div>
-        <div class="col">{{ task.creator.username }}</div>
+        <div class="col">{{ task.creator.first_name }} {{ task.creator.last_name }}</div>
       </div>
       <div class="row p-1">
         <div class="col">{% trans "Исполнитель" %}</div>
