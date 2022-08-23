@@ -286,6 +286,7 @@ class TasksListView(CustomLoginRequiredMixin, ListView):
             queryset = self.get_queryset()
 
         context["filter"] = TasksFilter(self.request.GET, queryset=queryset)
+
         return context
 
 

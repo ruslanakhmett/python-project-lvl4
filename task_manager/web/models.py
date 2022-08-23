@@ -3,6 +3,14 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+class MyUser(User):
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
+
 class Statuses(models.Model):
     name = models.CharField(max_length=200, null=False, unique=True, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)

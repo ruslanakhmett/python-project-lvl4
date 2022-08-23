@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
-from .models import Statuses, Tasks, Labels
+from .models import Statuses, Tasks, Labels, MyUser
 
 
 class UserLoginForm(forms.Form):
@@ -90,7 +90,7 @@ class TaskCreateForm(forms.ModelForm):
     )
     executor = forms.ModelChoiceField(
         label=_("Исполнитель"),
-        queryset=User.objects.all().exclude(username="admin"),
+        queryset=MyUser.objects.all().exclude(username="admin"),
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
