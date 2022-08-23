@@ -24,14 +24,13 @@ class CheckStatusCodeNoLoginTestCases(TestCase):
         response = self.client.get(ROOT_URL + "/users/create/")
         self.assertEqual(response.status_code, 200)
 
-
     def test_302_response_status_code(self):
         response = self.client.get(ROOT_URL + "/statuses/")
         self.assertEqual(response.status_code, 302)
         response = self.client.get(ROOT_URL + "/statuses/create/")
         self.assertEqual(response.status_code, 302)
-        # response = self.client.get(ROOT_URL + "/tasks/")
-        # self.assertEqual(response.status_code, 302)
+        response = self.client.get(ROOT_URL + "/tasks/")
+        self.assertEqual(response.status_code, 302)
         response = self.client.get(ROOT_URL + "/tasks/create/")
         self.assertEqual(response.status_code, 302)
         response = self.client.get(ROOT_URL + "/labels/")
