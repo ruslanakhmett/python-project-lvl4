@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic import CreateView, ListView
 from django.utils.translation import gettext_lazy as _
@@ -293,53 +293,29 @@ class TasksCreateView(CustomLoginRequiredMixin, View):
     template_name = "pages/tasks_create.html"
 
     def get(self, request, **kwargs):
-        form = TaskCreateForm()
 
         context = {
-            "users": User.objects.all().exclude(username="admin"),
-            "labels": Labels.objects.all(),
-            "form": form,
-        }
+            "form": TaskCreateForm()}
+
         return render(request, self.template_name, context)
 
     def post(self, request, **kwargs):
         form = TaskCreateForm(request.POST or None)
 
-        if request.user.is_authenticated and form.is_valid():
-            get_name = request.POST.get("name")
-            get_text = request.POST.get("description")
-            get_status_id = request.POST.get("status")  # get as id
+        if form.is_valid():
+            name = request.POST.get("name")
+            description = request.POST.get("description")
+            status_id = request.POST.get("status")
+            executor_id = request.POST.get("executor") if request.POST.get("executor") else None
+            labels_id_list = request.POST.getlist("labels") if request.POST.getlist("labels") else []
 
-            if request.POST.get(
-                "executor"
-            ).isalpha():  # if got executor name or "-------"
-                get_executor_id = User.objects.get(
-                    username=request.POST.get("executor")
-                ).id
-            else:
-                get_executor_id = None
-
-            if request.POST.getlist(
-                "labels"
-            ):  # get as list ['fewfew', 'wfwerfref', 'fwrefwerfref']
-                get_labels_list = request.POST.getlist("labels")
-            else:
-                get_labels_list = None
-
-            instance = Tasks.objects.create(
-                name=get_name,
-                description=get_text,
-                status_id=get_status_id,
-                executor_id=get_executor_id,
-                creator_id=request.user.pk,
-            )
-            if get_labels_list:
-                labels_id_list = []
-                for name in get_labels_list:
-                    labels_id_list.append(Labels.objects.get(name=name).id)
-
-                instance.labels.add(*labels_id_list)  # add m2m data
-
+            Tasks.objects.create(
+                name=name,
+                description=description,
+                status_id=status_id,
+                executor_id=executor_id,
+                creator_id=request.user.pk).labels.add(*labels_id_list)  # add m2m data
+            
             messages.add_message(
                 request,
                 messages.SUCCESS,
@@ -356,45 +332,20 @@ class TasksUpdateView(CustomLoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
 
+        instance = Tasks.objects.get(id=kwargs['pk'])
+
         context = {
-            "task": Tasks.objects.get(id=kwargs["pk"]),
-            "users": User.objects.all().exclude(username="admin"),
-            "statuses": Statuses.objects.all(),
-            "all_labels": Labels.objects.all(),
-            "used_labels": Tasks.objects.get(id=kwargs["pk"]).labels.all(),
-        }
+            "form": TaskCreateForm(instance=instance)
+            }
         return render(request, self.template_name, context)
 
     def post(self, request, **kwargs):
 
-        get_name = request.POST.get("name")
-        get_text = request.POST.get("text")
-        get_status_id = Statuses.objects.get(name=request.POST.get("status")).id
-
-        if request.POST.get("executor").isalpha():
-            get_executor_id = User.objects.get(username=request.POST.get("executor")).id
-        else:
-            get_executor_id = None
-
-        if request.POST.getlist("labels"):
-            get_labels_list = request.POST.getlist("labels")
-        else:
-            get_labels_list = None
-
-        try:
-            Tasks.objects.filter(id=kwargs["pk"]).update(
-                name=get_name,
-                description=get_text,
-                executor_id=get_executor_id,
-                status_id=get_status_id,
-            )
-
-            if get_labels_list:
-                labels_id_list = []
-                for name in get_labels_list:
-                    labels_id_list.append(Labels.objects.get(name=name).id)
-                instance = Tasks.objects.get(id=kwargs["pk"])
-                instance.labels.set(labels_id_list)  # update m2m data from list
+        instance = get_object_or_404(Tasks, id=kwargs['pk'])
+        form = TaskCreateForm(request.POST or None, instance=instance)
+        
+        if form.is_valid():
+            form.save()
 
             messages.add_message(
                 request,
@@ -404,13 +355,6 @@ class TasksUpdateView(CustomLoginRequiredMixin, View):
             )
             return redirect("tasks")
 
-        except Exception as error:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                error,
-                fail_silently=True,
-            )
         return redirect("tasks")
 
 

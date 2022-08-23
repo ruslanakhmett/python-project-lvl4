@@ -30,8 +30,6 @@
 
 <h1>{% trans "Создать задачу" %}</h1>
 <br>
-<br>
-<br>
 <form class="form-inline center" method="post">
     {% csrf_token %}
     {% for field in form.fields %}
@@ -42,26 +40,7 @@
                     {% endif %}
         {% endfor %}
     {{ form.as_p }}
-        <div class="col-md">
-          <div class="col-auto my-3">
-            <label class="mr-sm-2" type="text" for="id_executor">{% trans "Исполнитель" %}</label>
-            <select name="executor" class="form-select" id="id_executor">
-              <option selected>----------</option>
-              {% for user in users %}
-              <option value="{{ user.username }}">{{ user.username }}</option>
-              {% endfor %}
-            </select>
-            <br>
-
-        <div class="form-group"><label for="id_labels">{% trans "Метки" %}</label>
-            <select name="labels" type="text" class="form-control" id="id_labels" multiple>
-              {% for label in labels %}
-              <option value="{{ label.name }}">{{ label.name }}</option>
-              {% endfor %}
-            </select>
-        </div>
-        <br> 
-
+    <br>
         <main class="px-3">
           <button type="submit" class="btn btn-secondary border-white bg-white">{% trans "Создать" %}</button>
           </main>

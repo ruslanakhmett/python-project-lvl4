@@ -7,15 +7,14 @@ from .models import Statuses, Tasks, Labels
 
 
 class UserLoginForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.label_suffix = ""
 
     username = forms.CharField(
+        label_suffix = "",
         label=_("Имя пользователя"),
         widget=forms.TextInput(attrs={"class": "form-control", "autofocus": True}),
     )
     password = forms.CharField(
+        label_suffix = "",
         label=_("Пароль"),
         widget=forms.PasswordInput(attrs={"class": "form-control"}),  # noqa 501
     )
@@ -32,11 +31,9 @@ class SignUpForm(UserCreationForm):
 
 
 class StatusCreateForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.label_suffix = ""
 
     name = forms.CharField(
+        label_suffix = "",
         error_messages={"unique": "Task status с таким Имя уже существует."},
         label=_("Имя"),
         widget=forms.TextInput(
@@ -50,11 +47,9 @@ class StatusCreateForm(forms.ModelForm):
 
 
 class LabelCreateForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.label_suffix = ""
 
     name = forms.CharField(
+        label_suffix = "",
         error_messages={"unique": "Label с таким Имя уже существует."},
         label=_("Имя"),
         widget=forms.TextInput(
@@ -68,6 +63,7 @@ class LabelCreateForm(forms.ModelForm):
 
 
 class TaskCreateForm(forms.ModelForm):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
@@ -81,6 +77,7 @@ class TaskCreateForm(forms.ModelForm):
     )
     description = forms.CharField(
         label=_("Описание"),
+        required=False,
         widget=forms.Textarea(
             attrs={"class": "form-control", "rows": 4, "placeholder": _("Описание")}
         ),
@@ -91,7 +88,19 @@ class TaskCreateForm(forms.ModelForm):
         required=True,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
+    executor = forms.ModelChoiceField(
+        label=_("Исполнитель"),
+        queryset=User.objects.all().exclude(username="admin"),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    labels = forms.ModelMultipleChoiceField(
+        label=_("Метки"),
+        queryset=Labels.objects.all(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={"class": "form-control"}),
+    )
 
     class Meta:
         model = Tasks
-        fields = ("name", "description", "status")
+        fields = ("name", "description", "status", "executor", 'labels')
