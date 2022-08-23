@@ -152,17 +152,21 @@ class CreateTestCases(TestCase):
         self.client = Client()
         self.labels_url = reverse('labels_create')
         self.statuses_url = reverse('statuses_create')
+        self.credentials = {
+            'username': 'sergio',
+            'password': '12345test'}
+        User.objects.create_user(**self.credentials)
         self.client.login(username='sergio', password='12345test')
 
     def test_create_label(self):
-        response = self.client.post(self.labels_url, {
+        response = self.client.post(self.labels_url,data={
             'name': 'label1'
         })
         self.assertEquals(response.status_code, 302)
         self.assertEquals(Labels.objects.get(id=1).name, 'label1')
 
     def test_create_status(self):
-        response = self.client.post(self.statuses_url, {
+        response = self.client.post(self.statuses_url, data={
             'name': 'status1'
         })
         self.assertEquals(response.status_code, 302)
@@ -181,19 +185,19 @@ class CreateTaskTestCases(TestCase):
             'username': 'sergio',
             'password': '12345test'}
         User.objects.create_user(**self.credentials)
-        Statuses.objects.create(name='status1')
-        Labels.objects.create(name='label1')
         self.client.login(username='sergio', password='12345test')
+        Statuses.objects.bulk_create([Statuses(name='status1'), Statuses(name='status2')])
+        Labels.objects.bulk_create([Labels(name='label1'), Labels(name='label2')])
 
 
-    def test_create_task(self):
-        response = self.client.post(self.task_url, {
+    def test_create_and_update_task(self):
+
+        response = self.client.post(self.task_url, data={
             'name': 'task1',
-            'text': 'description1',
+            'description': 'description1',
+            'status': 1,
             'executor': 'sergio',
-            'status': 'status1',
-            'labels':['label1'],
-        })
+            'labels': ['label1']})
 
         self.assertEquals(response.status_code, 302)
         self.assertEquals(Tasks.objects.get(id=1).name, 'task1')

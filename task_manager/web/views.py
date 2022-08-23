@@ -307,14 +307,14 @@ class TasksCreateView(CustomLoginRequiredMixin, View):
         if request.user.is_authenticated and form.is_valid():
             get_name = request.POST.get('name')
             get_text = request.POST.get('description')
-            get_status_id = request.POST.get('status')
-            
+            get_status_id = request.POST.get('status')  # get as id
+
             if request.POST.get('executor').isalpha():  # if got executor name or "-------"
                 get_executor_id = User.objects.get(username=request.POST.get('executor')).id
             else:
                 get_executor_id = None
-            
-            if request.POST.getlist('labels'):
+
+            if request.POST.getlist('labels'):  # get as list ['fewfew', 'wfwerfref', 'fwrefwerfref']
                 get_labels_list = request.POST.getlist('labels')
             else:
                 get_labels_list = None
@@ -322,8 +322,8 @@ class TasksCreateView(CustomLoginRequiredMixin, View):
             instance = Tasks.objects.create(
                 name=get_name,
                 description=get_text,
-                executor_id=get_executor_id,
                 status_id=get_status_id,
+                executor_id=get_executor_id,
                 creator_id=request.user.pk,
 
             )
@@ -342,7 +342,6 @@ class TasksCreateView(CustomLoginRequiredMixin, View):
                 )
             return redirect('tasks')
         else:
-            print(form.errors)
             return render(request, self.template_name, {'form': form})
 
 
