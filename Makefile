@@ -1,7 +1,3 @@
-test-cov:
-	poetry run pytest --cov=task_manager/ --cov-report xml
-test:
-	pytest --capture=no
 run:
 	python3 manage.py runserver
 req:
@@ -10,16 +6,13 @@ req:
 install:
 	poetry install
 
-install:
-	poetry install
-
 lint:
 	poetry run flake8
 
-cov:
-	pytest --cov=task_manager
+test-cov:
+	poetry run pytest --cov=task_manager/ --cov-report xml
 
 check: selfcheck test
 
 
-.PHONY: install test lint selfcheck check build page_loader deploy test-coverage
+.PHONY: install test lint selfcheck check test-coverage
