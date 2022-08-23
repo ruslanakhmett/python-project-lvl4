@@ -61,19 +61,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
-if os.environ.get('GITHUB_WORKFLOW'):
-    DATABASES = {
+DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+if os.environ.get('GITHUB_WORKFLOW'):
     SECRET_KEY = 'test_key'
     DEBUG = True
 
-
 else:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
