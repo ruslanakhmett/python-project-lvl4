@@ -6,12 +6,16 @@ from django.views import View
 from django.views.generic import CreateView, ListView
 from django.utils.translation import gettext_lazy as _
 
-from .forms import SignUpForm, UserLoginForm, StatusCreateForm, LabelCreateForm, TaskCreateForm
+from .forms import (
+    SignUpForm,
+    UserLoginForm,
+    StatusCreateForm,
+    LabelCreateForm,
+    TaskCreateForm,
+)
 from .models import Statuses, Tasks, Labels
 from .filters import TasksFilter
 from .utils import CustomLoginRequiredMixin
-
-
 
 
 class IndexView(View):
@@ -42,17 +46,17 @@ class LoginPageView(View):
             )
             if user is not None:
                 login(request, user)
-                messages.add_message(request,
-                                     messages.SUCCESS,
-                                     _("Вы залогинены"))
+                messages.add_message(request, messages.SUCCESS, _("Вы залогинены"))
                 return redirect("index")
             else:
                 messages.add_message(
                     request,
                     messages.ERROR,
-                    _("Пожалуйста, введите правильные имя пользователя и пароль. \
+                    _(
+                        "Пожалуйста, введите правильные имя пользователя и пароль. \
                                          Оба поля могут быть \
-                                             чувствительны к регистру."),
+                                             чувствительны к регистру."
+                    ),
                 )
         return render(request, self.template_name, context={"form": form})
 
@@ -71,9 +75,7 @@ class SignUpView(CreateView):
             user.refresh_from_db()
             user.save()
             messages.add_message(
-                request,
-                messages.SUCCESS,
-                _("Пользователь успешно зарегистрирован")
+                request, messages.SUCCESS, _("Пользователь успешно зарегистрирован")
             )
             return redirect("login")
         return render(request, self.template_name, {"form": form})
@@ -92,15 +94,13 @@ class UsersShowView(View):
 
 class UpdateUserView(CustomLoginRequiredMixin, View):
     template_name = "pages/user_update.html"
-    
+
     def get(self, request, **kwargs):
         form = SignUpForm(instance=request.user)
 
         user_id_from_link = kwargs["pk"]
         if request.user.pk == user_id_from_link:
-            return render(request,
-                            self.template_name,
-                            context={"form": form})
+            return render(request, self.template_name, context={"form": form})
         messages.add_message(
             request,
             messages.ERROR,
@@ -108,7 +108,6 @@ class UpdateUserView(CustomLoginRequiredMixin, View):
             fail_silently=True,
         )
         return redirect("users")
- 
 
     def post(self, request, **kwargs):
         form = SignUpForm(request.POST, instance=request.user)
@@ -116,9 +115,7 @@ class UpdateUserView(CustomLoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.add_message(
-                request, 
-                messages.SUCCESS,
-                _("Пользователь успешно изменён")
+                request, messages.SUCCESS, _("Пользователь успешно изменён")
             )
             return redirect("users")
         return render(request, self.template_name, context={"form": form})
@@ -140,7 +137,6 @@ class DeleteUserView(CustomLoginRequiredMixin, View):
         )
         return redirect("users")
 
-
     def post(self, request, **kwargs):
 
         task = Tasks.objects.filter(executor_id=request.user.id)
@@ -149,8 +145,9 @@ class DeleteUserView(CustomLoginRequiredMixin, View):
                 request,
                 messages.ERROR,
                 _("Невозможно удалить пользователя, потому что он используется"),
-                fail_silently=True)
-            return redirect('users')
+                fail_silently=True,
+            )
+            return redirect("users")
 
         else:
             try:
@@ -162,14 +159,14 @@ class DeleteUserView(CustomLoginRequiredMixin, View):
                     _("Пользователь успешно удалён"),
                     fail_silently=True,
                 )
-            except Exception as error: 
+            except Exception as error:
                 messages.add_message(
                     request,
                     messages.ERROR,
                     error.message,
                     fail_silently=True,
                 )
-            return redirect('users')
+            return redirect("users")
 
 
 class StatusesShowView(CustomLoginRequiredMixin, View):
@@ -190,7 +187,6 @@ class StatusesCreateView(CustomLoginRequiredMixin, View):
     def post(self, request):
         form = StatusCreateForm(request.POST or None)
 
-
         if form.is_valid():
             Statuses.objects.create(**form.cleaned_data)
 
@@ -200,24 +196,27 @@ class StatusesCreateView(CustomLoginRequiredMixin, View):
                 _("Статус успешно создан"),
                 fail_silently=True,
             )
-            return redirect ('statuses')
+            return redirect("statuses")
         else:
-            return render(request, self.template_name, {'form': form})
+            return render(request, self.template_name, {"form": form})
 
 
 class StatusesUpdateView(View):
     template_name = "pages/statuses_update.html"
 
     def get(self, request, **kwargs):
-        context = {"form": StatusCreateForm(), 
-                   "status": Statuses.objects.get(id=kwargs["pk"])}
+        context = {
+            "form": StatusCreateForm(),
+            "status": Statuses.objects.get(id=kwargs["pk"]),
+        }
         return render(request, self.template_name, context)
-
 
     def post(self, request, **kwargs):
 
         try:
-            Statuses.objects.filter(id=kwargs["pk"]).update(name=request.POST.get('results')) #.update(name=request.name)
+            Statuses.objects.filter(id=kwargs["pk"]).update(
+                name=request.POST.get("results")
+            )  # .update(name=request.name)
             messages.add_message(
                 request,
                 messages.SUCCESS,
@@ -225,14 +224,14 @@ class StatusesUpdateView(View):
                 fail_silently=True,
             )
 
-        except Exception as error: 
+        except Exception as error:
             messages.add_message(
                 request,
                 messages.ERROR,
                 error,
                 fail_silently=True,
             )
-        return redirect('statuses')
+        return redirect("statuses")
 
 
 class StatusesDeleteView(CustomLoginRequiredMixin, View):
@@ -259,17 +258,18 @@ class StatusesDeleteView(CustomLoginRequiredMixin, View):
                     request,
                     messages.ERROR,
                     _("Невозможно удалить статус, потому что он используется"),
-                    fail_silently=True)
-                redirect('labels')
-        
-        except Exception as error: 
+                    fail_silently=True,
+                )
+                redirect("labels")
+
+        except Exception as error:
             messages.add_message(
                 request,
                 messages.ERROR,
                 error,
                 fail_silently=True,
             )
-        return redirect('statuses')
+        return redirect("statuses")
 
 
 class TasksListView(CustomLoginRequiredMixin, ListView):
@@ -280,14 +280,13 @@ class TasksListView(CustomLoginRequiredMixin, ListView):
 
         context = super().get_context_data(**kwargs)
 
-        if self.request.GET.get('self_tasks'):
+        if self.request.GET.get("self_tasks"):
             queryset = self.get_queryset().filter(creator_id=self.request.user.pk)
         else:
             queryset = self.get_queryset()
 
-        context['filter'] = TasksFilter(self.request.GET, queryset=queryset)
+        context["filter"] = TasksFilter(self.request.GET, queryset=queryset)
         return context
-
 
 
 class TasksCreateView(CustomLoginRequiredMixin, View):
@@ -295,54 +294,61 @@ class TasksCreateView(CustomLoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
         form = TaskCreateForm()
-        
-        context = {"users": User.objects.all().exclude(username="admin"),
-                   "labels": Labels.objects.all(),
-                   "form": form}
+
+        context = {
+            "users": User.objects.all().exclude(username="admin"),
+            "labels": Labels.objects.all(),
+            "form": form,
+        }
         return render(request, self.template_name, context)
 
     def post(self, request, **kwargs):
         form = TaskCreateForm(request.POST or None)
 
         if request.user.is_authenticated and form.is_valid():
-            get_name = request.POST.get('name')
-            get_text = request.POST.get('description')
-            get_status_id = request.POST.get('status')  # get as id
+            get_name = request.POST.get("name")
+            get_text = request.POST.get("description")
+            get_status_id = request.POST.get("status")  # get as id
 
-            if request.POST.get('executor').isalpha():  # if got executor name or "-------"
-                get_executor_id = User.objects.get(username=request.POST.get('executor')).id
+            if request.POST.get(
+                "executor"
+            ).isalpha():  # if got executor name or "-------"
+                get_executor_id = User.objects.get(
+                    username=request.POST.get("executor")
+                ).id
             else:
                 get_executor_id = None
 
-            if request.POST.getlist('labels'):  # get as list ['fewfew', 'wfwerfref', 'fwrefwerfref']
-                get_labels_list = request.POST.getlist('labels')
+            if request.POST.getlist(
+                "labels"
+            ):  # get as list ['fewfew', 'wfwerfref', 'fwrefwerfref']
+                get_labels_list = request.POST.getlist("labels")
             else:
                 get_labels_list = None
-            
+
             instance = Tasks.objects.create(
                 name=get_name,
                 description=get_text,
                 status_id=get_status_id,
                 executor_id=get_executor_id,
                 creator_id=request.user.pk,
-
             )
             if get_labels_list:
                 labels_id_list = []
                 for name in get_labels_list:
                     labels_id_list.append(Labels.objects.get(name=name).id)
-                
+
                 instance.labels.add(*labels_id_list)  # add m2m data
 
             messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    _("Задача успешно создана"),
-                    fail_silently=True,
-                )
-            return redirect('tasks')
+                request,
+                messages.SUCCESS,
+                _("Задача успешно создана"),
+                fail_silently=True,
+            )
+            return redirect("tasks")
         else:
-            return render(request, self.template_name, {'form': form})
+            return render(request, self.template_name, {"form": form})
 
 
 class TasksUpdateView(CustomLoginRequiredMixin, View):
@@ -350,27 +356,28 @@ class TasksUpdateView(CustomLoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
 
-        context = {"task": Tasks.objects.get(id=kwargs["pk"]),
-                   "users": User.objects.all().exclude(username="admin"),
-                   "statuses": Statuses.objects.all(),
-                   "all_labels": Labels.objects.all(),
-                   "used_labels": Tasks.objects.get(id=kwargs["pk"]).labels.all()}
+        context = {
+            "task": Tasks.objects.get(id=kwargs["pk"]),
+            "users": User.objects.all().exclude(username="admin"),
+            "statuses": Statuses.objects.all(),
+            "all_labels": Labels.objects.all(),
+            "used_labels": Tasks.objects.get(id=kwargs["pk"]).labels.all(),
+        }
         return render(request, self.template_name, context)
-
 
     def post(self, request, **kwargs):
 
-        get_name = request.POST.get('name')
-        get_text = request.POST.get('text')
-        get_status_id = Statuses.objects.get(name=request.POST.get('status')).id
+        get_name = request.POST.get("name")
+        get_text = request.POST.get("text")
+        get_status_id = Statuses.objects.get(name=request.POST.get("status")).id
 
-        if request.POST.get('executor').isalpha():
-            get_executor_id = User.objects.get(username=request.POST.get('executor')).id
+        if request.POST.get("executor").isalpha():
+            get_executor_id = User.objects.get(username=request.POST.get("executor")).id
         else:
             get_executor_id = None
-            
-        if request.POST.getlist('labels'):
-            get_labels_list = request.POST.getlist('labels')
+
+        if request.POST.getlist("labels"):
+            get_labels_list = request.POST.getlist("labels")
         else:
             get_labels_list = None
 
@@ -380,8 +387,8 @@ class TasksUpdateView(CustomLoginRequiredMixin, View):
                 description=get_text,
                 executor_id=get_executor_id,
                 status_id=get_status_id,
-                )
-            
+            )
+
             if get_labels_list:
                 labels_id_list = []
                 for name in get_labels_list:
@@ -397,7 +404,7 @@ class TasksUpdateView(CustomLoginRequiredMixin, View):
             )
             return redirect("tasks")
 
-        except Exception as error: 
+        except Exception as error:
             messages.add_message(
                 request,
                 messages.ERROR,
@@ -412,11 +419,13 @@ class TasksDeleteView(CustomLoginRequiredMixin, View):
 
     def get(self, request, **kwargs):
         task = Tasks.objects.get(id=kwargs["pk"])
-        
+
         if request.user.is_authenticated and request.user.pk == task.creator_id:
-            return render(request,
-                        self.template_name,
-                        context={"task": Tasks.objects.get(id=kwargs["pk"])})
+            return render(
+                request,
+                self.template_name,
+                context={"task": Tasks.objects.get(id=kwargs["pk"])},
+            )
         else:
             messages.add_message(
                 request,
@@ -424,7 +433,7 @@ class TasksDeleteView(CustomLoginRequiredMixin, View):
                 _("Задачу может удалить только её автор"),
                 fail_silently=True,
             )
-            return redirect('tasks')
+            return redirect("tasks")
 
     def post(self, request, **kwargs):
         task = Tasks.objects.get(id=kwargs["pk"])
@@ -438,14 +447,14 @@ class TasksDeleteView(CustomLoginRequiredMixin, View):
                     fail_silently=True,
                 )
 
-            except Exception as error: 
+            except Exception as error:
                 messages.add_message(
                     request,
                     messages.ERROR,
                     error,
                     fail_silently=True,
                 )
-            return redirect('tasks')
+            return redirect("tasks")
 
 
 class TaskDetailsShowView(CustomLoginRequiredMixin, View):
@@ -483,24 +492,27 @@ class LabelsCreateView(CustomLoginRequiredMixin, View):
                 _("Метка успешно создана"),
                 fail_silently=True,
             )
-            return redirect ('labels')
+            return redirect("labels")
         else:
-            return render(request, self.template_name, {'form': form})
+            return render(request, self.template_name, {"form": form})
 
-    
-    
+
 class LabelsUpdateView(CustomLoginRequiredMixin, View):
     template_name = "pages/labels_update.html"
 
     def get(self, request, **kwargs):
-        context = {"form": LabelCreateForm(), 
-                   "label": Labels.objects.get(id=kwargs["pk"])}
+        context = {
+            "form": LabelCreateForm(),
+            "label": Labels.objects.get(id=kwargs["pk"]),
+        }
         return render(request, self.template_name, context)
 
     def post(self, request, **kwargs):
 
         try:
-            Labels.objects.filter(id=kwargs["pk"]).update(name=request.POST.get('results'))
+            Labels.objects.filter(id=kwargs["pk"]).update(
+                name=request.POST.get("results")
+            )
             messages.add_message(
                 request,
                 messages.SUCCESS,
@@ -508,14 +520,14 @@ class LabelsUpdateView(CustomLoginRequiredMixin, View):
                 fail_silently=True,
             )
 
-        except Exception as error: 
+        except Exception as error:
             messages.add_message(
                 request,
                 messages.ERROR,
                 error,
                 fail_silently=True,
             )
-        return redirect('labels')
+        return redirect("labels")
 
 
 class LabelsDeleteView(CustomLoginRequiredMixin, View):
@@ -543,14 +555,15 @@ class LabelsDeleteView(CustomLoginRequiredMixin, View):
                     request,
                     messages.ERROR,
                     _("Невозможно удалить метку, потому что она используется"),
-                    fail_silently=True)
-                redirect('labels')
+                    fail_silently=True,
+                )
+                redirect("labels")
 
-        except Exception as error: 
+        except Exception as error:
             messages.add_message(
                 request,
                 messages.ERROR,
                 error,
                 fail_silently=True,
             )
-        return redirect('labels')
+        return redirect("labels")
