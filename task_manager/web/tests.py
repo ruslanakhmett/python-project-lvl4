@@ -164,12 +164,10 @@ class CreateTaskTestCases(TestCase):
         self.credentials = {"username": "sergio", "password": "12345test"}
         User.objects.create_user(**self.credentials)
         self.client.login(username="sergio", password="12345test")
-        Statuses.objects.bulk_create(
-            [Statuses(name="status1"), Statuses(name="status2")]
-        )
-        Labels.objects.bulk_create([Labels(name="label1"), Labels(name="label2")])
+        Statuses.objects.create(name="status1")
+        Labels.objects.create(name="label1")
 
-    def test_create_and_update_task(self):
+    def test_create_task(self):
 
         response = self.client.post(
             self.task_url,
@@ -177,11 +175,10 @@ class CreateTaskTestCases(TestCase):
                 "name": "task1",
                 "description": "description1",
                 "status": 1,
-                "executor": "sergio",
-                "labels": ["label1"],
+                "executor": 1,
+                "labels": ["1"],
             },
         )
-
         self.assertEquals(response.status_code, 302)
         self.assertEquals(Tasks.objects.get(id=1).name, "task1")
         self.assertEquals(Tasks.objects.get(id=1).description, "description1")
