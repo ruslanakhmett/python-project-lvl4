@@ -308,7 +308,7 @@ class TasksCreateView(CustomLoginRequiredMixin, View):
             description = request.POST.get("description")
             status_id = request.POST.get("status")
             executor_id = request.POST.get("executor") if request.POST.get("executor") else None
-            labels_id_list = request.POST.getlist("labels") if request.POST.getlist("labels") else []
+            labels_id_list = request.POST.getlist("labels") if request.POST.getlist("labels") else []  # noqa E501
 
             Tasks.objects.create(
                 name=name,
