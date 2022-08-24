@@ -58,6 +58,7 @@ class Tasks(models.Model):
         return self.name
 
 
+
 # for extend user profile:
 
 # from django.db.models.signals import post_save

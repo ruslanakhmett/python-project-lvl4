@@ -316,7 +316,7 @@ class TasksCreateView(CustomLoginRequiredMixin, View):
                 status_id=status_id,
                 executor_id=executor_id,
                 creator_id=request.user.pk).labels.add(*labels_id_list)  # add m2m data
-            
+
             messages.add_message(
                 request,
                 messages.SUCCESS,
@@ -337,14 +337,14 @@ class TasksUpdateView(CustomLoginRequiredMixin, View):
 
         context = {
             "form": TaskCreateForm(instance=instance)
-            }
+        }
         return render(request, self.template_name, context)
 
     def post(self, request, **kwargs):
 
         instance = get_object_or_404(Tasks, id=kwargs['pk'])
         form = TaskCreateForm(request.POST or None, instance=instance)
-        
+
         if form.is_valid():
             form.save()
 

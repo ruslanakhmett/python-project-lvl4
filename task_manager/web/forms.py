@@ -9,12 +9,12 @@ from .models import Statuses, Tasks, Labels, MyUser
 class UserLoginForm(forms.Form):
 
     username = forms.CharField(
-        label_suffix = "",
+        label_suffix="",
         label=_("Имя пользователя"),
         widget=forms.TextInput(attrs={"class": "form-control", "autofocus": True}),
     )
     password = forms.CharField(
-        label_suffix = "",
+        label_suffix="",
         label=_("Пароль"),
         widget=forms.PasswordInput(attrs={"class": "form-control"}),  # noqa 501
     )
@@ -33,7 +33,7 @@ class SignUpForm(UserCreationForm):
 class StatusCreateForm(forms.ModelForm):
 
     name = forms.CharField(
-        label_suffix = "",
+        label_suffix="",
         error_messages={"unique": "Task status с таким Имя уже существует."},
         label=_("Имя"),
         widget=forms.TextInput(
@@ -49,7 +49,7 @@ class StatusCreateForm(forms.ModelForm):
 class LabelCreateForm(forms.ModelForm):
 
     name = forms.CharField(
-        label_suffix = "",
+        label_suffix="",
         error_messages={"unique": "Label с таким Имя уже существует."},
         label=_("Имя"),
         widget=forms.TextInput(

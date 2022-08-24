@@ -166,10 +166,6 @@ msgstr "Delete"
 msgid "Создать"
 msgstr "Create"
 
-#: task_manager/web/templates/pages/tasks.html:37
-msgid "Создать задачу"
-msgstr "Create task"
-
 #: task_manager/web/templates/pages/labels_delete.html:25
 msgid "Удаление метки"
 msgstr "Delete label"
@@ -216,7 +212,7 @@ msgstr "Submit"
 msgid "Автор"
 msgstr "Author"
 
-#: task_manager/web/templates/pages/tasks_create.html:31
+#: task_manager/web/templates/pages/tasks_create.html:36
 msgid "Создать задачу"
 msgstr "Create task"
 
@@ -301,11 +297,11 @@ msgstr "User deleted successfully"
 msgid "Статус успешно создан"
 msgstr "Status created successfully"
 
-#: task_manager/web/views.py:246
+#: task_manager/web/views.py:223
 msgid "Статус успешно изменён"
 msgstr "Status updated successfully"
 
-#: task_manager/web/views.py:274
+#: task_manager/web/views.py:253
 msgid "Статус успешно удалён"
 msgstr "Status deleted successfully"
 
