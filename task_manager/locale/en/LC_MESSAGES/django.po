@@ -108,12 +108,12 @@ msgid "Регистрация"
 msgstr "Registration"
 
 #: task_manager/web/templates/pages/index.html:30
-msgid "Привет от Хекслета!"
-msgstr "Hello from Hexlet!"
+msgid "TaskManager Pro Software"
+msgstr "TaskManager Pro Software"
 
 #: task_manager/web/templates/pages/index.html:31
-msgid "Практические курсы по программированию"
-msgstr "Practical programming courses"
+msgid "Лучший продукт для agile-команд"
+msgstr "The best product for agile teams"
 
 #: task_manager/web/templates/pages/index.html:33
 msgid "Узнать больше"
