@@ -23,7 +23,9 @@
     {% endfor %}
 {% endif %}
 
-<main class="px-3">
+
+<div class="container d-flex h-100">
+  <div class="row justify-content-center align-self-center">
 <h1>{% trans "Пользователи" %}</h1>
 <br>
 
@@ -51,10 +53,8 @@
       {% endfor %}
     </tbody>
   </table>
-</main>
-<br>
-<br>
-<br>
-<br>
+
+</div>
+</div>
 
 {% endblock %}
